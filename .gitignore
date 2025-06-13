@@ -1,0 +1,32 @@
+# VIM swap file
+*.*.swp
+
+# KDE Kate/Kwrite swap file
+*.*.kate-swp
+
+# KDE Kate/Kwrite backup file
+*~
+
+# To Do directory
+TODO
+
+# GIT commit template
+GIT_commit.txt
+
+# GIT tag template
+GIT_tag.txt
+
+# Target files
+*.elf
+*.map
+
+# Object files
+*.so
+*.so*
+*.o
+*.a
+
+# LaTeX documentation temporary files
+*.aux
+*.log
+*.toc
