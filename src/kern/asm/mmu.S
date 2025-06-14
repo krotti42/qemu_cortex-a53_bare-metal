@@ -30,15 +30,15 @@
 
 .section .tlb
 
-SYMBOL(tlb_kern_lvl0)           /* 256GiB regions */
+SYMBOL(tlb_kern_lvl0)           /* 512*512GiB regions */
 .space TBL_SIZE
-SYMBOL(tlb_kern_lvl1)           /* First 2GiB regions only for kernel */
+SYMBOL(tlb_kern_lvl1)           /* First 2GiB region only for kernel */
 .space TBL_SIZE
-SYMBOL(tlb_kern_lvl2)           /* 2MiB regions for kernel at index 1 level 1 table */
+SYMBOL(tlb_kern_lvl2)           /* 146*2MiB regions for kernel at index 1 level 1 table */
 .space TBL_SIZE
-SYMBOL(tlb_user_lvl0)           /* 256GB regions */
+SYMBOL(tlb_user_lvl0)           /* 512GB regions */
 .space TBL_SIZE
-SYMBOL(tlb_user_lvl1)           /* 256*1GB regions for userspace */
+SYMBOL(tlb_user_lvl1)           /* 512*1GB regions for userspace */
 .space TBL_SIZE
 
 /**
@@ -276,6 +276,9 @@ LOFUNCTION_E(lo_tlb_user_setup)
 
 /**
  * Setup translation table control register
+ *
+ *
+ *
  */
 LOFUNCTION_S(lo_tlb_setup)
     ldr x0, =0x5B5103510
@@ -288,6 +291,9 @@ LOFUNCTION_E(lo_tlb_setup)
  * Enable MMU
  */
 LOFUNCTION_S(lo_mmu_enable)
+    tlbi alle1              /* Invalidate MMU cached old TLB's */
+    dsb sy
+    isb
     mrs x0, SCTLR_EL1
     orr x0, x0, #1
     msr SCTLR_EL1, x0
@@ -295,34 +301,56 @@ LOFUNCTION_S(lo_mmu_enable)
     ret
 LOFUNCTION_E(lo_mmu_enable)
 
+.text
+
 /**
  * Get kernel translation table level 0
  */
-FUNCTION_S(tlb_kern_lvl0_get)
+FUNCTION_S(mmu_tlb_kern_lvl0_get)
     mrs x0, TTBR1_EL1
     ret
-FUNCTION_E(tlb_kern_lvl0_get)
+FUNCTION_E(mmu_tlb_kern_lvl0_get)
 
 /**
  * Get kernel translation table level 1
  */
-FUNCTION_S(tlb_kern_lvl1_get)
+FUNCTION_S(mmu_tlb_kern_lvl1_get)
     ldr x0, =tlb_kern_lvl1
     ret
-FUNCTION_E(tlb_kern_lvl1_get)
+FUNCTION_E(mmu_tlb_kern_lvl1_get)
+
+/**
+ * Get kernel translation table level 2
+ */
+FUNCTION_S(mmu_tlb_kern_lvl2_get)
+    ldr x0, =tlb_kern_lvl2
+    ret
+FUNCTION_E(mmu_tlb_kern_lvl2_get)
 
 /**
  * Get userspace translation table level 0
  */
-FUNCTION_S(tlb_user_lvl0_get)
+FUNCTION_S(mmu_tlb_user_lvl0_get)
     mrs x0, TTBR0_EL1
     ret
-FUNCTION_E(tlb_user_lvl0_get)
+FUNCTION_E(mmu_tlb_user_lvl0_get)
 
 /**
  * Get userspace translation table level 1
  */
-FUNCTION_S(tlb_user_lvl1_get)
+FUNCTION_S(mmu_tlb_user_lvl1_get)
     ldr x0, =tlb_user_lvl1
     ret
-FUNCTION_E(tlb_user_lvl1_get)
+FUNCTION_E(mmu_tlb_user_lvl1_get)
+
+/**
+ * Invalidate MMU cached TLB's
+ */
+FUNCTION_S(mmu_tlb_inval)
+    tlbi alle1
+    dsb sy
+    isb
+    ret
+FUNCTION_E(mmu_tlb_inval)
+
+.end
