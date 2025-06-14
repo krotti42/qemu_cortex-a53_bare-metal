@@ -41,6 +41,16 @@ LOENTRY_S(_lstart)
     bne 3000f               /* Branch to EL2 setup if we are not in EL3 */
 
     /**
+     * Disable MMU, I-Cache and D-Cache
+     */
+    mrs x0, SCTLR_EL3
+    bic x0, x0, #(1 << 0)   /* Disable MMU */
+    bic x0, x0, #(1 << 2)   /* Disable D-Cache */
+    bic x0, x0, #(1 << 12)  /* Disable I-Cache */
+    msr SCTLR_EL3, x0
+    isb
+
+    /**
      * Setup next lower exception level (EL2)
      */
     msr SCTLR_EL2, xzr
