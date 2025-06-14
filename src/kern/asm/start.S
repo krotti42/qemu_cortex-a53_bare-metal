@@ -44,6 +44,18 @@ ENTRY_S(_start)
     bl intr_enable
 
     /**
+     * Clean and invalidate caches, then enable them
+     */
+    bl cpu_icache_inval
+    bl cpu_dcache_l1_inval
+    bl cpu_dcache_l2_inval
+    mrs x0, SCTLR_EL1       /* Read SCTLR_EL1 register */
+    orr x0, x0, #(1 << 2)   /* Enable D-Cache */
+    orr x0, x0, #(1 << 12)  /* Enable I-Cache */
+    msr SCTLR_EL1, x0       /* Write SCTLR_EL1 register */
+    isb
+
+    /**
      * Zero .bss for C runtime
      */
     bl zero_bss
