@@ -19,6 +19,7 @@ CC			= $(CROSS_COMPILE)gcc
 LD			= $(CROSS_COMPILE)gcc
 
 # C compiler flags
+CCFLAGS			+= -g
 CCFLAGS			+= -Wall
 CCFLAGS			+= -Wextra
 CCFLAGS			+= -pedantic
