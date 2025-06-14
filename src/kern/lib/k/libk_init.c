@@ -24,11 +24,15 @@
 
 #include <_libk.h>
 
+#if 0
 extern void _init(void);
+#endif
 
 void libk_init(void)
 {
+#if 0
     _init();
+#endif
     _libk_seterrno(0);
     _libk_malloc_init();
     _libk_rand_init();
