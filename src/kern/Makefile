@@ -44,24 +44,32 @@ LDFLAGS			+= -Wl,-Map $(TARGET_KERN).map
 LDFLAGS			+= -Wl,--no-warn-rwx-segments
 
 include ./asm/files.mk
+include ./lib/k/files.mk
 
 KERN_AOBJ		+= $(KERN_ASRC:.S=.o)
+KERN_COBJ		+= $(KERN_CSRC:.c=.o)
 
 all: kern
 
 # Link object files
-kern: $(KERN_AOBJ)
+kern: $(KERN_AOBJ) $(KERN_COBJ)
 	@echo "   [CCLD] $(TARGET_KERN).elf"
-	@$(LD) $(CCFLAGS) $(LDFLAGS) -o $(TARGET_KERN).elf $(KERN_AOBJ)
+	@$(LD) $(CCFLAGS) $(LDFLAGS) -o $(TARGET_KERN).elf $(KERN_AOBJ) $(KERN_COBJ)
 
 # Assemble assembly sources
 $(KERN_AOBJ): %.o: %.S
 	@echo "   [CCAS] $@"
 	@$(AS) -c $(CCFLAGS) -o $@ $<
 
+# Compile C sources
+$(KERN_COBJ): %.o: %.c
+	@echo "   [CC]   $@"
+	@$(CC) -c $(CCFLAGS) -o $@ $<
+
 .PHONY: clean
 clean:
 	@echo "   [CLEAN]"
 	@$(RM) $(KERN_AOBJ)
+	@$(RM) $(KERN_COBJ)
 	@$(RM) $(TARGET_KERN).elf
 	@$(RM) $(TARGET_KERN).map
