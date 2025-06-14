@@ -60,6 +60,10 @@ ENTRY_S(_start)
      */
     bl zero_bss
 
+    /**
+     * Jump to kernel main
+     */
+    bl kern_main
 
 /**
  * Should never be reached
