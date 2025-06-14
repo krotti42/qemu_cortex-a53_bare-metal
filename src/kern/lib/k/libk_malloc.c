@@ -193,7 +193,7 @@ void _libk_malloc_init(void)
     memset(&__kern_heap, 0, sizeof(struct _libk_heap));
     __kern_heap.p_start = (unsigned long int *) _heap_s;
     __kern_heap.p_end = (unsigned long int *) _heap_e;
-    __kern_heap.len_bytes = (unsigned long int) __kern_heap.p_end - __kern_heap.p_start;
+    __kern_heap.len_bytes = (unsigned long int) (__kern_heap.p_end - __kern_heap.p_start);
     __kern_heap.len_block = __kern_heap.len_bytes / sizeof(unsigned long int);
     __kern_heap.free_bytes = __kern_heap.len_bytes;
     __kern_heap.free_block = __kern_heap.len_block;
@@ -219,13 +219,13 @@ void _libk_mem_free(void *ptr)
     if (!ptr)
         return;
     
-    if (ptr < (void *) mem.p_start)
+    if (ptr < (void *) __kern_heap.p_start)
         return;
     
-    if (ptr > (void *) mem.p_end)
+    if (ptr > (void *) __kern_heap.p_end)
         return;
     
-    return do_free(ptr);
+    do_free(ptr);
 }
 
 size_t _libk_mem_size(void *ptr)
@@ -233,10 +233,10 @@ size_t _libk_mem_size(void *ptr)
     if (!ptr)
         return 0;
     
-    if (ptr < (void *) mem.p_start)
+    if (ptr < (void *) __kern_heap.p_start)
         return 0;
     
-    if (ptr > (void *) mem.p_end)
+    if (ptr > (void *) __kern_heap.p_end)
         return 0;
     
     return do_size(ptr);
