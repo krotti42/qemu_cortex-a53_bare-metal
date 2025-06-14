@@ -88,7 +88,7 @@ LOENTRY_S(_lstart)
     isb
 
     /**
-     * Setup next lower exception level (EL2)
+     * Setup next lower exception level (EL1)
      */
     mrs x0, HCR_EL2
     orr x0, x0, #(1 << 31)  /* EL1 is AArch64 */
@@ -146,6 +146,9 @@ LOENTRY_S(_lstart)
     msr SCTLR_EL1, x0       /* Write SCTLR_EL1 register */
     isb
 
+    /**
+     * Setup basic TLB's for MMU and enable the MMU
+     */
     bl lo_tlb_kern_zero
     bl lo_tlb_user_zero
     bl lo_tlb_mem_type
