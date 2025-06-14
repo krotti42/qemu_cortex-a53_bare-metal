@@ -13,14 +13,45 @@ Therefore the entry `_lstart` starts at PA `0x41000000`. The low startup creates
 
 The kernel currently only setups the stack pointer for itself, setups a basic interrupt vector table and enables them and zeros the `.bss` section for C runtime. Then for testing purpose it loops forever currently.
 
+## Memory Map (QEMU)
+
+Machine `virt` with default settings (2GiB):
+
+| Physical Address (PMA) | Size                | Content                      |
+|------------------------|---------------------|------------------------------|
+| 0x00000000_00000000    | 0x00000000_40000000 | Device memory                |
+| 0x00000000_40000000    | 0x00000000_01000000 | RAM reserved (16MiB for DTB) |
+| 0x00000000_41000000    | 0x00000000_7F000000 | RAM free usable              |
+
+Machine `virt` with 4GiB memory:
+
+| Physical Address (PMA) | Size                | Content                      |
+|------------------------|---------------------|------------------------------|
+| 0x00000000_00000000    | 0x00000000_40000000 | Device memory                |
+| 0x00000000_40000000    | 0x00000000_01000000 | RAM reserved (16MiB for DTB) |
+| 0x00000000_41000000    | 0x00000000_FF000000 | RAM free usable              |
+
+**NOTE:**  
+Dump QEMU's DTB command:
+```
+$ qemu-system-aarch64 -m 4G -machine virt,dumpdtb=virt.dtb -cpu cortex-a53
+```
+Convert DTB to human readable DTS command with device tree compiler and view with `less`:
+```
+$ dtc -I dtb -O dts virt.dtb | less
+```
+
 ## Memory Map (Kernel)
 
-| Physical Address (PMA) | Virtual Address (VMA)  | Content                   |
-|------------------------|----------------------- |---------------------------|
-| 0x00000000             | 0xFFFF0000_00000000    | Device memory (1GiB)      |
-| 0x40000000             | 0xFFFF0000_40000000    | QEMU's DTB (16MiB)        |
-| 0x41000000             | 0xFFFF0000_41000000    | Low kernel startup (2MiB) |
-| 0x41200000             | 0xFFFF0000_41200000    | Kernel (256MiB)           |
+| Physical Address (PMA) | Virtual Address (VMA) | Content                   |
+|------------------------|-----------------------|---------------------------|
+| 0x00000000             | 0xFFFF0000_00000000   | Device memory (1GiB)      |
+| 0x40000000             | 0xFFFF0000_40000000   | QEMU's DTB (16MiB)        |
+| 0x41000000             | 0xFFFF0000_41000000   | Low kernel startup (2MiB) |
+| 0x41200000             | 0xFFFF0000_41200000   | Kernel (256MiB)           |
+
+**NOTE:**  
+Current setup for `TTBR1_EL1`.
 
 ## TODO
 
@@ -43,5 +74,5 @@ $ make
 ## Run on QEMU
 
 ```
-$ qemu-system-aarch64 -m 4G -machine virt -cpu cortex-a53 -device loader,file=./start.elf,cpu-num=0 -d in_asm,cpu
+$ qemu-system-aarch64 -m 4G -machine virt -cpu cortex-a53 -device loader,file=./kern.elf,cpu-num=0 -d in_asm,cpu
 ```
