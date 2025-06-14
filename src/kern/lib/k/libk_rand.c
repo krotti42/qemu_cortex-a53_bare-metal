@@ -22,7 +22,7 @@ static unsigned long int __libk_rand;
 
 void _libk_rand_init(void)
 {
-    __jlibc_rand = 1;       /* Should be initialized to 1 according C standard */
+    __libk_rand = 1;        /* Should be initialized to 1 according C standard */
 }
 
 unsigned long int _libk_rand_get(void)
