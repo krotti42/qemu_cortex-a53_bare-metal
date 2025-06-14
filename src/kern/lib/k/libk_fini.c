@@ -25,7 +25,7 @@
  * Normally this will never required in the kernel
  */
 
-#include <libk.h>
+#include <_libk.h>
 
 extern void _fini(void);
 
