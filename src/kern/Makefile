@@ -43,8 +43,7 @@ LDFLAGS			+= -T ./ld/kern.ld
 LDFLAGS			+= -Wl,-Map $(TARGET_KERN).map
 LDFLAGS			+= -Wl,--no-warn-rwx-segments
 
-include ./asm/files.mk
-include ./lib/k/files.mk
+include ./files.mk
 
 KERN_AOBJ		+= $(KERN_ASRC:.S=.o)
 KERN_COBJ		+= $(KERN_CSRC:.c=.o)
