@@ -19,9 +19,9 @@
  */
 
 #include <k/stdlib.h>
-#include <_klib.h>
+#include <_libk.h>
 
 void srand(unsigned int seed)
 {
-    _klib_rand_set((unsigned long int) seed);
+    _libk_rand_set((unsigned long int) seed);
 }

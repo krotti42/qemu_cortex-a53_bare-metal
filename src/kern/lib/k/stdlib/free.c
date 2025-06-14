@@ -27,5 +27,5 @@ void free(void *ptr)
     if (!ptr)
         return;
     
-    _klib_mem_free(ptr);
+    _libk_mem_free(ptr);
 }

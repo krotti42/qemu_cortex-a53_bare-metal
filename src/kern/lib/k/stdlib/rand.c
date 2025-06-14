@@ -19,16 +19,16 @@
  */
 
 #include <k/stdlib.h>
-#include <_klib.h>
+#include <_libk.h>
 
 int rand(void)
 {
     unsigned long int next;
     int ret;
     
-    next = _klib_rand_get();
+    next = _libk_rand_get();
     next = next * 1103515245UL + 12345UL;
-    _klib_rand_set(next);
+    _libk_rand_set(next);
     ret = (next / 65536UL) % (RAND_MAX - 1);
     
     return ret;
