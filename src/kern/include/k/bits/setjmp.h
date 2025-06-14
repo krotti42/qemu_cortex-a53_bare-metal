@@ -21,7 +21,7 @@
 #ifndef LIBK_BITS_SETJMP_H
 #define LIBK_BITS_SETJMP_H
 
-typedef unsigned char __jmp_buf[256] _jmp_buf;
+typedef unsigned char _jmp_buf[256];
 
 extern void _l_longjmp(_jmp_buf env, int val);
 extern int  _l_setjmp(_jmp_buf env);
