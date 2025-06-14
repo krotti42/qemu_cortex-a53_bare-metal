@@ -17,19 +17,19 @@ The kernel currently only setups the stack pointer for itself, setups a basic in
 
 Machine `virt` with default settings (2GiB):
 
-| Physical Address (PMA) | Size                | Content                      |
-|------------------------|---------------------|------------------------------|
-| 0x00000000_00000000    | 0x00000000_40000000 | Device memory                |
-| 0x00000000_40000000    | 0x00000000_01000000 | RAM reserved (16MiB for DTB) |
-| 0x00000000_41000000    | 0x00000000_7F000000 | RAM free usable              |
+| Physical Address (PMA) | Size                | Content                        |
+|------------------------|---------------------|--------------------------------|
+| 0x00000000_00000000    | 0x00000000_40000000 | Device memory                  |
+| 0x00000000_40000000    | 0x00000000_01000000 | RAM reserved (16MiB for DTB)   |
+| 0x00000000_41000000    | 0x00000000_7F000000 | RAM free usable (2GiB - 16MiB) |
 
 Machine `virt` with 4GiB memory:
 
-| Physical Address (PMA) | Size                | Content                      |
-|------------------------|---------------------|------------------------------|
-| 0x00000000_00000000    | 0x00000000_40000000 | Device memory                |
-| 0x00000000_40000000    | 0x00000000_01000000 | RAM reserved (16MiB for DTB) |
-| 0x00000000_41000000    | 0x00000000_FF000000 | RAM free usable              |
+| Physical Address (PMA) | Size                | Content                        |
+|------------------------|---------------------|--------------------------------|
+| 0x00000000_00000000    | 0x00000000_40000000 | Device memory                  |
+| 0x00000000_40000000    | 0x00000000_01000000 | RAM reserved (16MiB for DTB)   |
+| 0x00000000_41000000    | 0x00000000_FF000000 | RAM free usable (4GiB - 16MiB) |
 
 **NOTE:**  
 Dump QEMU's DTB command:
@@ -41,17 +41,17 @@ Convert DTB to human readable DTS command with device tree compiler and view wit
 $ dtc -I dtb -O dts virt.dtb | less
 ```
 
-## Memory Map (Kernel)
+## Virtual Memory Map (Kernel)
 
 | Physical Address (PMA) | Virtual Address (VMA) | Content                   |
 |------------------------|-----------------------|---------------------------|
-| 0x00000000             | 0xFFFF0000_00000000   | Device memory (1GiB)      |
-| 0x40000000             | 0xFFFF0000_40000000   | QEMU's DTB (16MiB)        |
-| 0x41000000             | 0xFFFF0000_41000000   | Low kernel startup (2MiB) |
-| 0x41200000             | 0xFFFF0000_41200000   | Kernel (256MiB)           |
+| 0x00000000_00000000    | 0xFFFF0000_00000000   | Device memory (1GiB)      |
+| 0x00000000_40000000    | 0xFFFF0000_40000000   | QEMU's DTB (16MiB)        |
+| 0x00000000_41000000    | 0xFFFF0000_41000000   | Low kernel startup (2MiB) |
+| 0x00000000_41200000    | 0xFFFF0000_41200000   | Kernel (256MiB)           |
 
 **NOTE:**  
-Current setup for `TTBR1_EL1`.
+Current setup for `TTBR1_EL1`, is setup in low kernel startup currently.
 
 ## TODO
 
@@ -76,3 +76,19 @@ $ make
 ```
 $ qemu-system-aarch64 -m 4G -machine virt -cpu cortex-a53 -device loader,file=./kern.elf,cpu-num=0 -d in_asm,cpu
 ```
+
+## Debug with GDB
+
+* Start/Run `kern.elf` with option `-s -S`:
+```
+$ qemu-system-aarch64 -m 4G -machine virt -cpu cortex-a53 -s -S -device loader,file=./kern.elf,cpu-num=0 -d in_asm,cpu
+```
+* Start GDB with:
+```
+$ aarch64-none-elf-gdb ./kern.elf
+```
+* In GDB command line connect to QEMU:
+```
+(gdb) target remote localhost:1234
+```
+* Now we can setup breakpoints, use single steps and so soon.
