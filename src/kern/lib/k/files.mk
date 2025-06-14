@@ -10,6 +10,8 @@ KERN_CSRC				+= $(KERN_LIBK_DIR)/libk_errno.c
 KERN_CSRC				+= $(KERN_LIBK_DIR)/libk_fini.c
 KERN_CSRC				+= $(KERN_LIBK_DIR)/libk_init.c
 KERN_CSRC				+= $(KERN_LIBK_DIR)/libk_malloc.c
+KERN_CSRC				+= $(KERN_LIBK_DIR)/libk_ofmt.c
+KERN_CSRC				+= $(KERN_LIBK_DIR)/libk_ofmt_int.c
 KERN_CSRC				+= $(KERN_LIBK_DIR)/libk_rand.c
 
 include $(KERN_LIBK_DIR)/ctype/files.mk
