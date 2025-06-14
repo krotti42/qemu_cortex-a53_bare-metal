@@ -34,11 +34,11 @@ SYMBOL(tlb_kern_lvl0)           /* 256GiB regions */
 .space TBL_SIZE
 SYMBOL(tlb_kern_lvl1)           /* First 2GiB regions only for kernel */
 .space TBL_SIZE
-SYMBOL(tlb_kern_lvl2)           /* 2MiB for kernel at index 1 level 1 table */
+SYMBOL(tlb_kern_lvl2)           /* 2MiB regions for kernel at index 1 level 1 table */
 .space TBL_SIZE
 SYMBOL(tlb_user_lvl0)           /* 256GB regions */
 .space TBL_SIZE
-SYMBOL(tlb_user_lvl1)           /* 254*1GB regions for userspace */
+SYMBOL(tlb_user_lvl1)           /* 256*1GB regions for userspace */
 .space TBL_SIZE
 
 /**
@@ -229,7 +229,9 @@ LOFUNCTION_S(lo_tlb_kern_setup)
 LOFUNCTION_E(lo_tlb_kern_setup)
 
 /**
- * Setup userspace kernel translation table
+ * Setup basic userspace translation table
+ *
+ * NOTE: We setup specific table for userspace later in C code.
  */
 LOFUNCTION_S(lo_tlb_user_setup)
     ldr x0, =tlb_user_lvl0
@@ -245,28 +247,24 @@ LOFUNCTION_S(lo_tlb_user_setup)
 #endif
     str x2, [x0]            /* Store at index 0 in level 0 table */
     /**
-     * Create first 1GiB block (VMA) kernel entry in level 1 table
+     * Map first 1GiB block to 0x000000000_00000000 (device memory) first
      */
     mov x4, xzr             /* Address 0x000000000 (first 1GB block is device memory ) */
-    lsr x5, x4, #30
-    and x5, x5, #0x1FF
-    lsl x4, x5, #30
+    mov x5, #0
     ldr x6, =0x60000000000601
     orr x4, x4, x6
     str x4, [x1, x5, lsl #3]
 
+    /**
+     * Map second 1GiB block to 0x000000000_40000000 (normal memory) first
+     *
+     * NOTE: We need this first to allow low kernel setup to run. If we
+     * don't this and then enable the MMU then an higher exception is
+     * thrown and further low kernel setup will not run. We unmap it
+     * later in kernel main.
+     */
     mov x4, #0x40000000
-    lsr x5, x4, #30
-    and x5, x5, #0x1FF
-    lsl x4, x5, #30
-    ldr x6, =0x00000000000705
-    orr x4, x4, x6
-    str x4, [x1, x5, lsl #3]
-
-    mov x4, #0x80000000
-    lsr x5, x4, #30
-    and x5, x5, #0x1FF
-    lsl x4, x5, #30
+    mov x5, #1
     ldr x6, =0x00000000000705
     orr x4, x4, x6
     str x4, [x1, x5, lsl #3]
