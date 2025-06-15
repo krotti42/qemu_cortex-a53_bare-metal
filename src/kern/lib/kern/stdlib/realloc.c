@@ -18,16 +18,33 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <stdlib.h>
+#include <string.h>
 
+#include <_libkern.h>
 
-void kern_main(void)
+void *realloc(void *ptr, size_t size)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    size_t old_size;
+    void *p;
+    
+    if (!ptr)
+        return NULL;
+    
+    if (!size)
+        return NULL;
+    
+    old_size = _libkern_mem_size(ptr);
+    
+    if (old_size < 1)
+        return NULL;
+    
+    p = _libkern_mem_alloc(size);
+    
+    if (!p)
+        return NULL;
+    
+    memmove(p, ptr, old_size);
+    
+    return p;
 }

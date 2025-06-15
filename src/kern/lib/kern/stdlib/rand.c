@@ -18,16 +18,19 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <stdlib.h>
 
+#include <_libkern.h>
 
-void kern_main(void)
+int rand(void)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    unsigned long int next;
+    int ret;
+    
+    next = _libkern_rand_get();
+    next = next * 1103515245UL + 12345UL;
+    _libkern_rand_set(next);
+    ret = (next / 65536UL) % (RAND_MAX - 1);
+    
+    return ret;
 }

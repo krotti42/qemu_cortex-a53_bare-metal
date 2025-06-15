@@ -18,16 +18,9 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <stdlib.h>
 
-
-void kern_main(void)
+int atoi(const char *nptr)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    return (int) strtol(nptr, (char **) NULL, 10);
 }

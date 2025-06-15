@@ -18,16 +18,14 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+static int __libkern_errno;
 
-
-void kern_main(void)
+void _libkern_seterrno(int num)
 {
-    libkern_init();
+    __libkern_errno = num;
+}
 
-    while (1)
-        ;
-
-    libkern_fini();
+int _libkern_geterrno(void)
+{
+    return __libkern_errno;
 }

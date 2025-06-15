@@ -18,16 +18,36 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <string.h>
 
+/*
+ * Append not more than *num* characters from the string pointed to by *src* 
+ * to the end of string pointed to by *dst*.
+ * 
+ * Returns the pointer from *dst*.
+ */
 
-void kern_main(void)
+char *strncat(char *dst, const char *src, size_t num)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    size_t i;
+    char *src_p;
+    char *dst_p;
+    
+    src_p = (char *) src;
+    dst_p = dst;
+    dst_p = dst_p + strlen(dst_p);
+    
+    for (i = 0; i < num; i++) {
+        if (*src_p == '\0')
+            break;
+        else {
+        *dst_p = *src_p;
+        dst_p++;
+        src_p++;
+        }
+    }
+    
+    *dst_p = '\0';
+    
+    return dst;
 }

@@ -18,16 +18,25 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <stdlib.h>
+#include <string.h>
 
+#include <_libkern.h>
 
-void kern_main(void)
+void *calloc(size_t nmemb, size_t size)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    void *ptr;
+    
+    if (!nmemb)
+        return NULL;
+    
+    if (!size)
+        return NULL;
+    
+    ptr = _libkern_mem_alloc(nmemb * size);
+    
+    if (ptr)
+        memset(ptr, 0, nmemb * size);
+    
+    return ptr;
 }

@@ -18,16 +18,49 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <string.h>
 
+/*
+ * Copy *num* characters from string pointed to by *src* into the string
+ * pointed to by *dst*.
+ * 
+ * Returns the pointer from *dst*.
+ * 
+ * NOTE:
+ * This function isn't save, if the place between the objects overlaps.
+ * Use the string function memmove() instead.
+ */
 
-void kern_main(void)
+char *strncpy(char *dst, const char *src, size_t num)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    size_t i;
+    char *d;
+    char *s;
+    
+    d = dst;
+    s = (char *) src;
+    
+    if (strlen(s) <= num) {
+        while (*s != '\0') {
+            *d = *s;
+            s++;
+            d++;
+        }
+        
+        *d = '\0';
+    } else {
+        for (i = 0; i < num; i++) {
+            if (*s != '\0')
+                *d = *s;
+            else {
+                *d = '\0';
+                break;
+            }
+            
+            s++;
+            d++;
+        }
+    }
+    
+    return dst;
 }

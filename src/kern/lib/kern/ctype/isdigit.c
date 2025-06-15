@@ -18,16 +18,15 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <ctype.h>
 
-
-void kern_main(void)
+/**
+ * ASCII only version from function isdigit().
+ */
+int isdigit(const int val)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    if ((val >= '0') && (val <= '9'))
+        return val;
+    
+    return 0;
 }

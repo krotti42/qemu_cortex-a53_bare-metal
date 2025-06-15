@@ -18,16 +18,30 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <string.h>
 
+/*
+ * Find the last occurrence of *val* (converted to char) in the object
+ * pointed to by *str*.
+ * 
+ * Returns a pointer to the located character, or a NULL pointer if the
+ * character doesn't occur in *str*.
+ */
 
-void kern_main(void)
+char *strrchr(const char *str, int val)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    size_t len;
+    char *p;
+    
+    len = strlen(str);
+    p = ((char *) str + (len - 1));
+    
+    while (p >= str) {
+        if (*p == (char) val)
+            return p;
+        
+        p--;
+    }
+    
+    return NULL;
 }

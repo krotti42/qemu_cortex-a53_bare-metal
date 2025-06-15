@@ -18,16 +18,37 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <string.h>
 
+/*
+ * Copy *num* characters from object pointed to by *src* into the object
+ * pointed to by *dst*.
+ * 
+ * Returns the pointer from *dst*.
+ * 
+ * NOTE:
+ * This function isn't save, if the place between the objects overlaps.
+ * Use the string function memmove() instead.
+ */
 
-void kern_main(void)
+#ifndef JLIBC_CONFIG_ARCH_MEMCPY
+
+void *memcpy(void *dst, const void *src, size_t num)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    size_t i;
+    unsigned char *p_dst;
+    unsigned char *p_src;
+    
+    p_dst = (unsigned char *) dst;
+    p_src = (unsigned char *) src;
+    
+    for (i = 0; i < num; i++) {
+        *p_dst = *p_src;
+        p_dst++;
+        p_src++;
+    }
+    
+    return dst;
 }
+
+#endif

@@ -18,16 +18,14 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <stdlib.h>
 
+#include <_libkern.h>
 
-void kern_main(void)
+void free(void *ptr)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    if (!ptr)
+        return;
+    
+    _libkern_mem_free(ptr);
 }

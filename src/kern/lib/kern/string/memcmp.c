@@ -18,16 +18,32 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <string.h>
 
+/*
+ * Compare the first *num* characters of the object pointed to by *ptr1*
+ * with the object pointed to by *ptr2*.
+ * 
+ * Returns the integer zero if *ptr1* and *ptr2* are equal, or an integer
+ * less or greater than zero if not.
+ */
 
-void kern_main(void)
+int memcmp(const void *ptr1, const void *ptr2, size_t num)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    unsigned char *p1;
+    unsigned char *p2;
+    size_t i;
+    
+    p1 = (unsigned char *) ptr1;
+    p2 = (unsigned char *) ptr2;
+    
+    for (i = 0; i < num; i++) {
+        if (*p1 != *p2)
+            return (int) (*p1 - *p2);
+        
+        p1++;
+        p2++;
+    }
+    
+    return 0;
 }

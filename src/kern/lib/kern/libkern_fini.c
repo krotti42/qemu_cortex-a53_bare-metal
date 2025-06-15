@@ -18,16 +18,20 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+/**
+ * Kernel library fini
+ *
+ * NOTE:
+ * Normally this will never required in the kernel
+ */
+
+#include <_libkern.h>
 
 
-void kern_main(void)
+extern void _fini(void);
+
+
+void libkern_fini(void)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    _fini();
 }

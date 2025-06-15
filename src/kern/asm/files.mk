@@ -13,4 +13,4 @@ KERN_ASRC			+= $(KERN_ASM_DIR)/vector.S
 KERN_ASRC			+= $(KERN_ASM_DIR)/user.S
 KERN_ASRC			+= $(KERN_ASM_DIR)/intr.S
 
-include $(KERN_ASM_DIR)/libk/files.mk
+include $(KERN_ASM_DIR)/libkern/files.mk

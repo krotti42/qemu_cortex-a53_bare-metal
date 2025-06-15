@@ -18,16 +18,9 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <stdlib.h>
 
-
-void kern_main(void)
+long long int atoll(const char *nptr)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    return strtoll(nptr, (char **) NULL, 10);
 }

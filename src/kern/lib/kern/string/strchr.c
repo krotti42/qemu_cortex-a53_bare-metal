@@ -18,16 +18,28 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <string.h>
 
+/*
+ * Find the first occurrence of *val* (converted to char) in the object
+ * pointed to by *str*.
+ * 
+ * Returns a pointer to the located character, or a NULL pointer if the
+ * character doesn't occur in *str*.
+ */
 
-void kern_main(void)
+char *strchr(const char *str, int val)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    char *p;
+    
+    p = (char *) str;
+    
+    while (*p != '\0') {
+        if (*p == (char) val)
+            return p;
+        
+        p++;
+    }
+    
+    return NULL;
 }

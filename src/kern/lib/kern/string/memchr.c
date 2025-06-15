@@ -18,16 +18,29 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <string.h>
 
+/*
+ * Find the first occurrence of *val* (converted to unsigned char) in the
+ * initial *num* characters of the object pointed to by *ptr*.
+ * 
+ * Returns a pointer to the located character, or a NULL pointer if the
+ * character doesn't occur in *ptr*.
+ */
 
-void kern_main(void)
+void *memchr(const void *ptr, int val, size_t num)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    size_t i;
+    unsigned char *p;
+    
+    p = (unsigned char *) ptr;
+    
+    for (i = 0; i < num; i++) {
+        if (*p == (unsigned char) val)
+            return (void *) p;
+        
+        p++;
+    }
+    
+    return NULL;
 }

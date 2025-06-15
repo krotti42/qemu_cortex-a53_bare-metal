@@ -18,16 +18,26 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <stdlib.h>
 
-
-void kern_main(void)
+void *bsearch(const void *key, const void *base, size_t nmemb, size_t size, 
+              int (*compar)(const void *, const void *))
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    size_t i;
+    unsigned char *tmp;
+    size_t k = 0;
+    void *ret = NULL;
+    
+    tmp = (unsigned char *) base;
+    
+    for (i = 0; i < nmemb; i++) {
+        if (compar(key, (void *) &tmp[k]) == 0) {
+            ret = (void *) &tmp[k];
+            break;
+        }
+        
+        k += size;
+    }
+    
+    return ret;
 }

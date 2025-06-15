@@ -18,16 +18,15 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <ctype.h>
 
-
-void kern_main(void)
+/**
+ * ASCII only version from function toupper().
+ */
+int toupper(const int val)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    if (!((val >= 'a') && (val <= 'z')))
+        return val;
+    
+    return (val - ('a' - 'A'));
 }

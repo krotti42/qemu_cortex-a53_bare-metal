@@ -18,16 +18,33 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <string.h>
 
+/*
+ * Copy string pointed to by *src* into the destination pointed to by *dst*.
+ * 
+ * Returns the pointer from *dst*.
+ * 
+ * NOTE:
+ * This function isn't save, if the place between the objects overlaps.
+ * Use the string function memmove() instead.
+ */
 
-void kern_main(void)
+char *strcpy(char *dst, const char *src)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    char *dst_p;
+    char *src_p;
+    
+    dst_p = dst;
+    src_p = (char *) src;
+    
+    while (*src_p != '\0') {
+        *dst_p = *src_p;
+        dst_p++;
+        src_p++;
+    }
+    
+    *dst_p = '\0';
+    
+    return dst;
 }

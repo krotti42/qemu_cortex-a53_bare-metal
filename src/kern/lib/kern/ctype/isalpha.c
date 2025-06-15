@@ -18,16 +18,16 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <ctype.h>
 
-
-void kern_main(void)
+/**
+ * ASCII only version from function isalpha().
+ */
+int isalpha(const int val)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    if (((val >= 'A') && (val <= 'Z')) || 
+        ((val >= 'a') && (val <= 'z')))
+        return val;
+    
+    return 0;
 }

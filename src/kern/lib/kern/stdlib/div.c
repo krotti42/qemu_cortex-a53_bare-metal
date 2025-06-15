@@ -18,16 +18,14 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <stdlib.h>
 
-
-void kern_main(void)
+div_t div(int numer, int denom)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    div_t ret;
+    
+    ret.quot = numer / denom;
+    ret.rem = numer % denom;
+    
+    return ret;
 }

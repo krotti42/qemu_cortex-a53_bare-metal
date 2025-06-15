@@ -18,16 +18,37 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <string.h>
 
+/*
+ * Compute the length of the maximum initial segment of the string pointed 
+ * to by *str1* which consists entirely of characters NOT from the string
+ * pointed to by *str2*.
+ * 
+ * Returns the length of the segment.
+ */
 
-void kern_main(void)
+size_t strcspn(const char *str1, const char *str2)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    size_t ret = 0;
+    char *s1;
+    char *s2;
+    
+    s1 = (char *) str1;
+    s2 = (char *) str2;
+    
+    while (*s1 != '\0') {
+        while (*s2 != '\0') {
+            if (*s1 == *s2)
+                return ret;
+            
+            s2++;
+        }
+        
+        s2 = (char *) str2;
+        s1++;
+        ret++;
+    }
+    
+    return ret;
 }

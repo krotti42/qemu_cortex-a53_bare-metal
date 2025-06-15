@@ -18,16 +18,42 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <string.h>
 
+/*
+ * Breaks the string pointed to by *str* into a sequence of tokens, each of 
+ * which is delimited by a character from the string pointed to by *sep*. 
+ * The first call in the sequence has a non-null first argument; subsequent 
+ * calls in the sequence have a null first argument.
+ * 
+ * Returns a pointer to the first character of a token, or a NULL pointer
+ * if there is no token.
+ */
 
-void kern_main(void)
+char *strtok(char *str, const char *sep)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    static char *p_str;
+    
+    if (!str && !p_str)
+        return NULL;
+    
+    if (p_str)
+        str = p_str;
+    
+    str += strspn(str, sep);
+    
+    if (*str == '\0') {
+        p_str = NULL;
+        return NULL;
+    }
+    
+    p_str = str + strcspn(str, sep);
+    
+    if (*p_str != '\0') {
+        *p_str = '\0';
+        p_str++;
+    } else
+        p_str = NULL;
+    
+    return str;
 }

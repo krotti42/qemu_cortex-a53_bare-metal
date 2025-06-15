@@ -18,16 +18,10 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#ifndef _LIBKERN_STDLIB_STRTO_HELPER_H
+#define _LIBKERN_STDLIB_STRTO_HELPER_H
 
+extern int strto_isvaliddig(const int c, int base);
+extern int strto_tobaseval(const int c, int base);
 
-void kern_main(void)
-{
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
-}
+#endif

@@ -18,16 +18,14 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <stdlib.h>
 
+#include <_libkern.h>
 
-void kern_main(void)
+void *malloc(size_t size)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    if (!size)
+        return NULL;
+    
+    return _libkern_mem_alloc(size);
 }

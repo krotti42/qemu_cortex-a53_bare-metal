@@ -18,16 +18,34 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <string.h>
 
+/*
+ * Find the first occurrence in the string pointed to by *str1* of any
+ * character from the string pointed to by *str2*.
+ * 
+ * Returns the pointer from the found character, or NULL if not.
+ */
 
-void kern_main(void)
+char *strpbrk(const char *str1, const char *str2)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    char *s1;
+    char *s2;
+    
+    s1 = (char *) str1;
+    s2 = (char *) str2;
+    
+    while (*s1 != '\0') {
+        while (*s2 != '\0') {
+            if (*s1 == *s2)
+                return s1;
+            
+            s2++;
+        }
+        
+        s2 = (char *) str2;
+        s1++;
+    }
+    
+    return NULL;
 }

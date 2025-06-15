@@ -18,16 +18,17 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <ctype.h>
 
-
-void kern_main(void)
+/**
+ * ASCII only version from function isxdigit().
+ */
+int isxdigit(const int val)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    if (((val >= '0') && (val <= '9')) || 
+        ((val >= 'a') && (val <= 'f')) || 
+        ((val >= 'A') && (val <= 'F')))
+        return val;
+    
+    return 0;
 }

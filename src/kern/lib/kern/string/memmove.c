@@ -18,16 +18,40 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <string.h>
 
+/*
+ * Copy *num* characters from object pointed to by *src* into the object
+ * pointed to by *dst*.
+ * 
+ * Returns the pointer from *dst*.
+ */
 
-void kern_main(void)
+void *memmove(void *dst, const void *src, size_t num)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    size_t i;
+    unsigned char *p_dst;
+    unsigned char *p_src;
+    
+    p_dst = (unsigned char *) dst;
+    p_src = (unsigned char *) src;
+    
+    if (p_dst - p_src >= (long int) num) {
+        for (i = 0; i < num; i++) {
+            *p_dst = *p_src;
+            p_dst++;
+            p_src++;
+        }
+    } else {
+        p_dst = p_dst + (num - 1);
+        p_src = p_src + (num - 1);
+        
+        for (i = num; i > 0; i--) {
+            *p_dst = *p_src;
+            p_dst--;
+            p_src--;
+        }
+    }
+    
+    return dst;
 }

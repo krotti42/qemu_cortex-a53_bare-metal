@@ -18,16 +18,14 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <stdlib.h>
 
-
-void kern_main(void)
+lldiv_t lldiv(long long int numer, long long int denom)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    lldiv_t ret;
+    
+    ret.quot = numer / denom;
+    ret.rem = numer % denom;
+    
+    return ret;
 }

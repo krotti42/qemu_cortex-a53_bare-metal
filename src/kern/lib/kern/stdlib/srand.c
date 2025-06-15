@@ -18,16 +18,11 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <stdlib.h>
 
+#include <_libkern.h>
 
-void kern_main(void)
+void srand(unsigned int seed)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    _libkern_rand_set((unsigned long int) seed);
 }

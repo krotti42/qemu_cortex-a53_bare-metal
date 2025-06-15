@@ -18,16 +18,31 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <string.h>
 
+/*
+ * Append the string pointed to by *src* to the end of string 
+ * pointed to by *dst*.
+ * 
+ * Returns the pointer from *dst*.
+ */
 
-void kern_main(void)
+char *strcat(char *dst, const char *src)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    char *src_p;
+    char *dst_p;
+    
+    src_p = (char *) src;
+    dst_p = dst;
+    dst_p = dst_p + strlen(dst_p);
+    
+    while (*src_p != '\0') {
+        *dst_p = *src_p;
+        dst_p++;
+        src_p++;
+    }
+    
+    *dst_p = '\0';
+    
+    return dst;
 }

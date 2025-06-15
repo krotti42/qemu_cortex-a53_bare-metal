@@ -18,16 +18,18 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <stdlib.h>
 
-
-void kern_main(void)
+long long int llabs(long long int j)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    long long int ret;
+    
+    ret = j;
+    
+    if (ret < 0) {
+        ret = ~ret;
+        ret++;
+    }
+    
+    return ret;
 }

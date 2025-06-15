@@ -18,16 +18,18 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+/**
+ * Kernel library init
+ */
 
+#include <_libkern.h>
 
-void kern_main(void)
+extern void _init(void);
+
+void libkern_init(void)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    _init();
+    _libkern_seterrno(0);
+    _libkern_malloc_init();
+    _libkern_rand_init();
 }

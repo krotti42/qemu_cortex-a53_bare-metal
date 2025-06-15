@@ -18,16 +18,30 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <string.h>
 
+/*
+ * Copy *num* characters of the value of *val* (converted to unsigned char)
+ * into the object pointed to by *ptr*.
+ * 
+ * Returns the pointer from the object *ptr*.
+ */
 
-void kern_main(void)
+#ifndef JLIBC_CONFIG_ARCH_MEMSET
+
+void *memset(void *ptr, int val, size_t num)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    size_t i;
+    unsigned char *p;
+    
+    p = (unsigned char *) ptr;
+    
+    for (i = 0; i < num; i++) {
+        *p = (unsigned char) val;
+        p++;
+    }
+    
+    return ptr;
 }
+
+#endif

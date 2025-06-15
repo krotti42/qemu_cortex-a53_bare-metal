@@ -18,16 +18,39 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <string.h>
 
+/*
+ * Compare the string pointed to by *str1* with the string pointed to by
+ * *str2*.
+ * 
+ * Returns the integer zero if *str1* and *str2* are equal, or an integer
+ * less or greater than zero if not.
+ */
 
-void kern_main(void)
+int strcmp(const char *str1, const char *str2)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    size_t s1_len;
+    size_t s2_len;
+    char *s1;
+    char *s2;
+    
+    s1_len = strlen(str1);
+    s2_len = strlen(str2);
+    
+    if (s1_len != s2_len)
+        return (int) s1_len - s2_len;
+    
+    s1 = (char *) str1;
+    s2 = (char *) str2;
+    
+    while (*s1 != '\0') {
+        if (*s1 != *s2)
+            return (int) *s1 - *s2;
+        
+        s1++;
+        s2++;
+    }
+    
+    return 0;
 }

@@ -18,16 +18,17 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <stdarg.h>
+#include <stdio.h>
 
-
-void kern_main(void)
+int sprintf(char *str, const char *format, ...)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    int ret;
+    va_list argp;
+    
+    va_start(argp, format);
+    ret = vsprintf(str, format, argp);
+    va_end(argp);
+    
+    return ret;
 }

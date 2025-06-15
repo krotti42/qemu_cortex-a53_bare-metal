@@ -18,16 +18,10 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <bits/setjmp.h>
+#include <setjmp.h>
 
-
-void kern_main(void)
+int setjmp(jmp_buf env)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    return _l_setjmp(env);
 }

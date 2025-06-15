@@ -18,16 +18,15 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <stdlib.h>
 
+/**
+ * This is a stub. Rewritten in further use to handle aborts in kernel.
+ * We have implemented now, because *libgcc* call this function.
+ */
 
-void kern_main(void)
+void abort(void)
 {
-    libkern_init();
-
     while (1)
         ;
-
-    libkern_fini();
 }

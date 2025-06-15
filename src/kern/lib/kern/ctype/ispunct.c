@@ -18,16 +18,18 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <ctype.h>
 
-
-void kern_main(void)
+/**
+ * ASCII only version from function ispunct().
+ */
+int ispunct(const int val)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    if (((val >= '!') && (val <= '/')) || 
+        ((val >= ':') && (val <= '@')) || 
+        ((val >= '[') && (val <= '`')) || 
+        ((val >= '{') && (val <= '~')))
+        return val;
+    
+    return 0;
 }

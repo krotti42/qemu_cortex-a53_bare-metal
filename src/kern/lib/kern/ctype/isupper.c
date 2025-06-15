@@ -18,16 +18,15 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <ctype.h>
 
-
-void kern_main(void)
+/**
+ * ASCII only version from function isupper().
+ */
+int isupper(const int val)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    if ((val >= 'A') && (val <= 'Z'))
+        return val;
+    
+    return 0;
 }

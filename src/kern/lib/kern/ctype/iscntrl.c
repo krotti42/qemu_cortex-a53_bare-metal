@@ -18,16 +18,19 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <ctype.h>
 
-
-void kern_main(void)
+/**
+ * ASCII only version from function iscntrl().
+ */
+int iscntrl(const int val)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    if (((val >= 0x00) && (val <= 0x1F)) || (val == 0x7F)) {
+        if (val == 0x00)
+            return (val + 1);
+        else
+            return val;
+    }
+    
+    return 0;
 }

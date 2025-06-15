@@ -18,16 +18,15 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <ctype.h>
 
-
-void kern_main(void)
+/**
+ * ASCII only version from function isspace().
+ */
+int isspace(const int val)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    if (((val >= '\t') && (val <= '\r')) || (val == ' '))
+        return val;
+    
+    return 0;
 }

@@ -18,16 +18,30 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+#include <string.h>
 
+/*
+ * Compute the length of the string pointed to by *str*.
+ * 
+ * Returns the number of characters without the terminating
+ * nul character.
+ */
 
-void kern_main(void)
+#ifndef JLIBC_CONFIG_ARCH_STRLEN
+
+size_t strlen(const char *str)
 {
-    libkern_init();
-
-    while (1)
-        ;
-
-    libkern_fini();
+    size_t ret = 0;
+    char *p;
+    
+    p = (char *) str;
+    
+    while (*p != '\0') {
+        ret++;
+        p++;
+    }
+    
+    return ret;
 }
+
+#endif

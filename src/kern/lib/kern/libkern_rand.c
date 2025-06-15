@@ -18,16 +18,19 @@
  *
  */
 
-#include <libkern.h>
-#include <kern_dev.h>
+static unsigned long int __libkern_rand;
 
-
-void kern_main(void)
+void _libkern_rand_init(void)
 {
-    libkern_init();
+    __libkern_rand = 1;     /* Should be initialized to 1 according C standard */
+}
 
-    while (1)
-        ;
+unsigned long int _libkern_rand_get(void)
+{
+    return __libkern_rand;
+}
 
-    libkern_fini();
+void _libkern_rand_set(unsigned long int seed)
+{
+    __libkern_rand = seed;
 }
