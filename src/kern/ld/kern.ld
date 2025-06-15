@@ -59,7 +59,32 @@ SECTIONS {
         *(.text.isr*)
         *(.text)
         *(.text*)
+
         _text_e = .;
+    } > RAM_HIKERN AT > RAM_LOKERN
+
+    .preinit_array : {
+        . = ALIGN(0x1000);
+        _preinit_array_s = .;
+        KEEP(*(.preinit_array))
+        KEEP(*(.preinit_array*))
+        _preinit_array_e = .;
+    } > RAM_HIKERN AT > RAM_LOKERN
+
+    .init_array : {
+        . = ALIGN(0x1000);
+        _init_array_s = .;
+        KEEP(*(.init_array))
+        KEEP(*(.init_array*))
+        _init_array_e = .;
+    } > RAM_HIKERN AT > RAM_LOKERN
+
+    .fini_array : {
+        . = ALIGN(0x1000);
+        _fini_array_s = .;
+        KEEP(*(.fini_array))
+        KEEP(*(.fini_array*))
+        _fini_array_e = .;
     } > RAM_HIKERN AT > RAM_LOKERN
 
     .rodata (READONLY) : {
