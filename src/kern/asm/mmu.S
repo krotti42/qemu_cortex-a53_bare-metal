@@ -291,11 +291,19 @@ LOFUNCTION_E(lo_tlb_setup)
  * Enable MMU
  */
 LOFUNCTION_S(lo_mmu_enable)
-    tlbi alle1              /* Invalidate MMU cached old TLB's */
+/**
+ * Invalidate MMU cached TLB's
+ *
+ * NOTE:
+ * Disabled because it throws an for me unknown exception.
+ */
+#if 0
+    tlbi alle1              /* Invalidate all MMU cached old TLB's */
     dsb sy
     isb
+#endif
     mrs x0, SCTLR_EL1
-    orr x0, x0, #1
+    orr x0, x0, #1          /* Enable MMU */
     msr SCTLR_EL1, x0
     isb
     ret
