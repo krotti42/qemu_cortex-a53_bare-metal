@@ -14,6 +14,7 @@ KERN_CSRC			+= $(KERN_LIBK_STRING_DIR)/strchr.c
 KERN_CSRC			+= $(KERN_LIBK_STRING_DIR)/strcmp.c
 KERN_CSRC			+= $(KERN_LIBK_STRING_DIR)/strcpy.c
 KERN_CSRC			+= $(KERN_LIBK_STRING_DIR)/strcspn.c
+KERN_CSRC			+= $(KERN_LIBK_STRING_DIR)/strerror.c
 KERN_CSRC			+= $(KERN_LIBK_STRING_DIR)/strlen.c
 KERN_CSRC			+= $(KERN_LIBK_STRING_DIR)/strncat.c
 KERN_CSRC			+= $(KERN_LIBK_STRING_DIR)/strncmp.c
