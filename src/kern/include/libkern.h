@@ -18,14 +18,16 @@
  *
  */
 
-#ifndef LIBK_SETJMP_H
-#define LIBK_SETJMP_H
+/**
+ *
+ * Kernel standard C library (libkern)
+ *
+ */
 
-#include <k/bits/setjmp.h>
+#ifndef _LIBKERN_H
+#define _LIBKERN_H
 
-typedef _jmp_buf jmp_buf;
-
-extern void longjmp(jmp_buf env, int val);
-extern int setjmp(jmp_buf env);
+extern void libkern_init(void);
+extern void libkern_fini(void);
 
 #endif

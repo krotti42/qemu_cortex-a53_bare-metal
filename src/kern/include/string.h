@@ -18,17 +18,10 @@
  *
  */
 
-#ifndef LIBK_STRING_H
-#define LIBK_STRING_H
+#ifndef _LIBKERN_STRING_H
+#define _LIBKERN_STRING_H
 
-#ifndef NULL
-#define NULL    ((void *)0)
-#endif
-
-#ifndef LIBK_SIZE_T
-#define LIBK_SIZE_T
-typedef unsigned long int size_t;
-#endif
+#include <stddef.h>
 
 /* 
  * Copying functions 

@@ -18,17 +18,10 @@
  *
  */
 
-#ifndef LIBK_STDLIB_H
-#define LIBK_STDLIB_H
+#ifndef _LIBKERN_STDLIB_H
+#define _LIBKERN_STDLIB_H
 
-#ifndef NULL
-#define NULL                ((void *)0)
-#endif
-
-#ifndef LIBK_SIZE_T
-#define LIBK_SIZE_T
-typedef unsigned long int size_t;
-#endif
+#include <stddef.h>
 
 #ifndef RAND_MAX
 #define RAND_MAX            32767

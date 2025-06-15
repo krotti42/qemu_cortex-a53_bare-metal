@@ -18,16 +18,10 @@
  *
  */
 
-/**
- *
- * Kernel library (libk)
- *
- */
+#ifndef _LIBKERN_LIBGEN_H
+#define _LIBKERN_LIBGEN_H
 
-#ifndef _LIBK_H
-#define _LIBK_H
-
-extern void libk_init(void);
-extern void libk_fini(void);
+extern char *basename(char *path);
+extern char *dirname(char *path);
 
 #endif

@@ -18,12 +18,14 @@
  *
  */
 
-#ifndef LIBK_BITS_SETJMP_H
-#define LIBK_BITS_SETJMP_H
+#ifndef _LIBKERN_SETJMP_H
+#define _LIBKERN_SETJMP_H
 
-typedef unsigned char _jmp_buf[256];
+#include <bits/setjmp.h>
 
-extern void _l_longjmp(_jmp_buf env, int val);
-extern int  _l_setjmp(_jmp_buf env);
+typedef _jmp_buf jmp_buf;
+
+extern void longjmp(jmp_buf env, int val);
+extern int setjmp(jmp_buf env);
 
 #endif

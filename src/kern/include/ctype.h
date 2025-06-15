@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef LIBK_CTYPE_H
-#define LIBK_CTYPE_H
+#ifndef _LIBKERN_CTYPE_H
+#define _LIBKERN_CTYPE_H
 
 /**
  * Standard C library character classification functions 

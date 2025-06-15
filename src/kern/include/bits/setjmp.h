@@ -18,12 +18,12 @@
  *
  */
 
-#ifndef LIBK_STDIO_H
-#define LIBK_STDIO_H
+#ifndef _LIBKERN_BITS_SETJMP_H
+#define _LIBKERN_BITS_SETJMP_H
 
-#include <stdarg.h>
+typedef unsigned char _jmp_buf[256];
 
-extern int sprintf(char *str, const char *format, ...);
-extern int vsprintf(char *str, const char *format, va_list args);
+extern void _l_longjmp(_jmp_buf env, int val);
+extern int  _l_setjmp(_jmp_buf env);
 
 #endif
