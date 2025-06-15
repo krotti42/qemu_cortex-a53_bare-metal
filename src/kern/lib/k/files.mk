@@ -14,6 +14,7 @@ KERN_CSRC				+= $(KERN_LIBK_DIR)/libk_ofmt.c
 KERN_CSRC				+= $(KERN_LIBK_DIR)/libk_ofmt_int.c
 KERN_CSRC				+= $(KERN_LIBK_DIR)/libk_rand.c
 
+include $(KERN_LIBK_DIR)/crt/files.mk
 include $(KERN_LIBK_DIR)/ctype/files.mk
 include $(KERN_LIBK_DIR)/setjmp/files.mk
 include $(KERN_LIBK_DIR)/stdio/files.mk

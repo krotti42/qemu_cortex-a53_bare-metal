@@ -27,13 +27,11 @@
 
 #include <_libk.h>
 
-#if 0
+
 extern void _fini(void);
-#endif
+
 
 void libk_fini(void)
 {
-#if 0
     _fini();
-#endif
 }
