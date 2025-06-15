@@ -18,25 +18,36 @@
  *
  */
 
-typedef void (*func)(void);
-
-extern func _preinit_array_s[0];
-extern func _preinit_array_e[0];
-extern func _init_array_s[0];
-extern func _init_array_e[0];
+extern unsigned long int _preinit_array_s;
+extern unsigned long int _preinit_array_e;
+extern unsigned long int _init_array_s;
+extern unsigned long int _init_array_e;
 
 void _init(void)
 {
-    func *f;
+    unsigned long int a;
+    void (*f)(void);
     
-    for (f = _preinit_array_s; f != _preinit_array_e; f++)
+    for (a = _preinit_array_s; a != _preinit_array_e; a++) {
+        f = (void (*)(void)) a;
         (*f)();
-    
-    for (f = _init_array_s; f != _init_array_e; f++)
+    }
+
+    for (a = _preinit_array_s; a != _preinit_array_e; a++) {
+        f = (void (*)(void)) a;
         (*f)();
+    }
 }
 
-func _preinit_array_s[0] __attribute__ ((used, section(".preinit_array"), aligned(sizeof(func)))) = { };
-func _preinit_array_e[0] __attribute__ ((used, section(".preinit_array"), aligned(sizeof(func)))) = { };
-func _init_array_s[0] __attribute__ ((used, section(".init_array"), aligned(sizeof(func)))) = { };
-func _init_array_e[0] __attribute__ ((used, section(".init_array"), aligned(sizeof(func)))) = { };
+unsigned long int _preinit_array_s __attribute__ ((used,
+                                                   section(".preinit_array"),
+                                                   aligned(sizeof(unsigned long int))));
+unsigned long int _preinit_array_e __attribute__ ((used,
+                                                   section(".preinit_array"),
+                                                   aligned(sizeof(unsigned long int))));
+unsigned long int _init_array_s __attribute__ ((used,
+                                                section(".init_array"),
+                                                aligned(sizeof(unsigned long int))));
+unsigned long int _init_array_e __attribute__ ((used,
+                                                section(".init_array"),
+                                                aligned(sizeof(unsigned long int))));

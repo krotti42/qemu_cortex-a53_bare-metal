@@ -18,18 +18,23 @@
  *
  */
 
-typedef void (*func)(void);
-
-extern func _fini_array_s[0];
-extern func _fini_array_e[0];
+extern unsigned long int _fini_array_s;
+extern unsigned long int _fini_array_e;
 
 void _fini(void)
 {
-    func *f;
-    
-    for (f = _fini_array_s; f != _fini_array_e; f++)
+    unsigned long int a;
+    void (*f)(void);
+
+    for (a = _fini_array_s; a != _fini_array_e; a++) {
+        f = (void (*)(void)) a;
         (*f)();
+    }
 }
 
-func _fini_array_s[0] __attribute__ ((used, section(".fini_array"), aligned(sizeof(func)))) = { };
-func _fini_array_e[0] __attribute__ ((used, section(".fini_array"), aligned(sizeof(func)))) = { };
+unsigned long int _fini_array_s __attribute__ ((used,
+                                                section(".fini_array"),
+                                                aligned(sizeof(unsigned long int))));
+unsigned long int _fini_array_e __attribute__ ((used,
+                                                section(".fini_array"),
+                                                aligned(sizeof(unsigned long int))));
