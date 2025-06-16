@@ -277,7 +277,49 @@ LOFUNCTION_E(lo_tlb_user_setup)
 /**
  * Setup translation table control register
  *
+ * Current setup:
  *
+ * Intermediate Physical Address size (IPS, bits [34:32]):
+ * - 48 bits - 256TiB (Value: 0b101)
+ *
+ * Granule size for the TTBR1_EL1 (TG1, bits [31:30]):
+ * - 4KiB (Value: 0b10)
+ *
+ * Shareability attribute for TTBR1_EL1 (SH1, bits [29:28]):
+ * - Inner Shareable (Value: 0b11)
+ *
+ * Outer cacheability attribute for TTBR1_EL1 (ORGN1, bits [27:26]):
+ * - Normal memory, Outer Write-Back Read-Allocate Write-Allocate Cacheable (Value: 0b01)
+ *
+ * Inner cacheability attribute for TTBR1_EL1 (IRGN1, bits [25:24]):
+ * - Normal memory, Inner Write-Back Read-Allocate Write-Allocate Cacheable (Value: 0b01)
+ *
+ * Translation table walk disable for translations using TTBR1_EL1 (EPD1, bit [23]):
+ * - Perform translation table walks using TTBR1_EL1 (Value: 0b0)
+ *
+ * Selects whether TTBR0_EL1 or TTBR1_EL1 defines the ASID (A1, bit [22]):
+ * - TTBR0_EL1.ASID defines the ASID (Value: 0b0)
+ *
+ * Size offset of the memory region addressed by TTBR1_EL1 (T1SZ, bits [21:16]):
+ * - 48 bits (Value: 16 0b010000)
+ *
+ * Granule size for the TTBR0_EL1 (TG0, bits [15:14]):
+ * - 4KiB (Value: 0b00)
+ *
+ * Shareability attribute for TTBR0_EL1 (SH0, bits [13:12]):
+ * - Inner Shareable (Value: 0b11)
+ *
+ * Outer cacheability attribute for TTBR0_EL1 (ORGN0, bits [11:10]):
+ * - Normal memory, Outer Write-Back Read-Allocate Write-Allocate Cacheable (Value: 0b01)
+ *
+ * Inner cacheability attribute for TTBR0_EL1 (IRGN0, bits [9:8]):
+ * - Normal memory, Inner Write-Back Read-Allocate Write-Allocate Cacheable (Value: 0b01)
+ *
+ * Translation table walk disable for translations using TTBR0_EL1 (EPD0, bit [7]):
+ * - Perform translation table walks using TTBR0_EL1 (Value: 0b0)
+ *
+ * Size offset of the memory region addressed by TTBR0_EL1 (T0SZ, bits [5:0]):
+ * - 48 bits (Value: 16 0b010000)
  *
  */
 LOFUNCTION_S(lo_tlb_setup)
@@ -291,17 +333,9 @@ LOFUNCTION_E(lo_tlb_setup)
  * Enable MMU
  */
 LOFUNCTION_S(lo_mmu_enable)
-/**
- * Invalidate MMU cached TLB's
- *
- * NOTE:
- * Disabled because it throws an for me unknown exception.
- */
-#if 0
-    tlbi alle1              /* Invalidate all MMU cached old TLB's */
+    tlbi vmalle1            /* Invalidate all MMU cached (old) TLB's */
     dsb sy
     isb
-#endif
     mrs x0, SCTLR_EL1
     orr x0, x0, #1          /* Enable MMU */
     msr SCTLR_EL1, x0
@@ -352,13 +386,13 @@ FUNCTION_S(mmu_tlb_user_lvl1_get)
 FUNCTION_E(mmu_tlb_user_lvl1_get)
 
 /**
- * Invalidate MMU cached TLB's
+ * Invalidate MMU all cached TLB's
  */
-FUNCTION_S(mmu_tlb_inval)
-    tlbi alle1
+FUNCTION_S(mmu_tlb_inval_all)
+    tlbi vmalle1
     dsb sy
     isb
     ret
-FUNCTION_E(mmu_tlb_inval)
+FUNCTION_E(mmu_tlb_inval_all)
 
 .end
