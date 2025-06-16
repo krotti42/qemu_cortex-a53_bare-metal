@@ -18,6 +18,10 @@
  *
  */
 
+/**
+ * Kernel higher half (high address) entry
+ */
+
 #define _ASM_ASSEMBLY_
 
 #include <asm.h>
@@ -65,9 +69,9 @@ ENTRY_S(_start)
      */
     bl kern_main
 
-/**
- * Should never be reached
- */
+    /**
+    * Should never be reached
+    */
 1000:
     b 1000b
 

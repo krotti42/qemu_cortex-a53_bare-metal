@@ -22,7 +22,7 @@
  * Kernel linker script
  */
 
-ENTRY(_lstart)
+ENTRY(_lo_start)
 
 MEMORY {
     RAM_LOCORE (rwx) : ORIGIN = 0x0000000041000000, LENGTH = 64M

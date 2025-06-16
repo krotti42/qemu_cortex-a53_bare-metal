@@ -19,14 +19,14 @@
  */
 
 /**
- * Kernel low address startup
+ * Kernel lower (lower address) entry
  */
 
 #define _ASM_ASSEMBLY_
 
 #include <asm.h>
 
-LOENTRY_S(_lstart)
+LOENTRY_S(_lo_start)
 /**
  * EL3 (Secure monitor)
  */
@@ -38,7 +38,7 @@ LOENTRY_S(_lstart)
     and x0, x0, #0xC        /* Mask EL bit field */
     asr x0, x0, #2          /* Shift right to test EL */
     cmp x0, #3              /* Test if we in EL3 */
-    bne 3000f               /* Branch to EL2 setup if we are not in EL3 */
+    bne 4000f               /* Branch to EL2 setup if we are not in EL3 */
 
     /**
      * Disable MMU, I-Cache and D-Cache
@@ -77,7 +77,7 @@ LOENTRY_S(_lstart)
 /**
  * EL2 (Hypervisor)
  */
-3000:
+4000:
     /**
      * Test if we are in EL2, jump if not
      */
@@ -85,7 +85,7 @@ LOENTRY_S(_lstart)
     and x0, x0, #0xC        /* Mask EL bit field */
     asr x0, x0, #2          /* Shift right to test EL */
     cmp x0, #2              /* Test if we in EL2 */
-    bne 2000f               /* Branch to EL1 setup if we are not in EL2 */
+    bne 3000f               /* Branch to EL1 setup if we are not in EL2 */
 
     /**
      * Disable MMU, I-Cache and D-Cache
@@ -134,14 +134,14 @@ LOENTRY_S(_lstart)
     mov x1, #0b101          /* EL1 is in handler mode */
     orr x0, x0, x1
     msr SPSR_EL2, x0
-    adr x0, 2000f
+    adr x0, 3000f
     msr ELR_EL2, x0
     eret
 
 /**
  * EL1 (Kernel)
  */
-2000:
+3000:
     /**
      * Setup EL1 stack pointer
      */
@@ -167,7 +167,16 @@ LOENTRY_S(_lstart)
     bl lo_tlb_setup
     bl lo_mmu_enable
 
-1000:
+    /**
+     * Jump to higher half kernel
+     */
+2000:
     ldr x0, =_start
     br x0
-LOENTRY_E(_lstart)
+
+    /**
+     * Should never be reached
+     */
+1000:
+    b 1000b
+LOENTRY_E(_lo_start)

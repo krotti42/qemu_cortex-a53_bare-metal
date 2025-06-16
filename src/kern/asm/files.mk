@@ -4,9 +4,9 @@
 
 KERN_ASM_DIR			= ./asm
 
-KERN_ASRC			+= $(KERN_ASM_DIR)/locore.S
+KERN_ASRC			+= $(KERN_ASM_DIR)/loentry.S
 KERN_ASRC			+= $(KERN_ASM_DIR)/mmu.S
-KERN_ASRC			+= $(KERN_ASM_DIR)/start.S
+KERN_ASRC			+= $(KERN_ASM_DIR)/entry.S
 KERN_ASRC			+= $(KERN_ASM_DIR)/cache.S
 KERN_ASRC			+= $(KERN_ASM_DIR)/crt0.S
 KERN_ASRC			+= $(KERN_ASM_DIR)/vector.S
