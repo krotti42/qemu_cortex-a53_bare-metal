@@ -30,7 +30,7 @@ LOENTRY_S(_lo_start)
 /**
  * EL3 (Secure monitor)
  */
-4000:
+5000:
     /**
      * Test if we are in EL3, jump if not
      */
@@ -70,7 +70,7 @@ LOENTRY_S(_lo_start)
     mov x1, #0b01001        /* EL2 is in handler mode */
     orr x0, x0, x1
     msr SPSR_EL3, x0
-    adr x0, 3000f
+    adr x0, 4000f
     msr ELR_EL3, x0
     eret
 
