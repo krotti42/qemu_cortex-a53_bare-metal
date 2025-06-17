@@ -84,7 +84,6 @@ SYMBOL(vector_el1_s)
     stp x2, x3, [sp, #-16]!
     stp x0, x1, [sp, #-16]!
     mrs x0, ESR_EL1
-    mrs x1, FAR_EL1
     b isr_cel_spel0_serr
 .balign 0x80
 /**
@@ -102,6 +101,8 @@ SYMBOL(vector_el1_s)
     stp x4, x5, [sp, #-16]!
     stp x2, x3, [sp, #-16]!
     stp x0, x1, [sp, #-16]!
+    mrs x0, ESR_EL1             /* Exception syndrome */
+    mrs x1, FAR_EL1             /* Exception fault address */
     b isr_cel_spel1_sync
 .balign 0x80
 /* IRQ or vIRQ */
@@ -144,6 +145,7 @@ SYMBOL(vector_el1_s)
     stp x4, x5, [sp, #-16]!
     stp x2, x3, [sp, #-16]!
     stp x0, x1, [sp, #-16]!
+    mrs x0, ESR_EL1             /* Exception syndrome */
     b isr_cel_spel1_serr
 .balign 0x80
 /**
@@ -161,6 +163,8 @@ SYMBOL(vector_el1_s)
     stp x4, x5, [sp, #-16]!
     stp x2, x3, [sp, #-16]!
     stp x0, x1, [sp, #-16]!
+    mrs x0, ESR_EL1             /* Exception syndrome */
+    mrs x1, FAR_EL1             /* Exception fault address */
     b isr_l64_sync
 .balign 0x80
 /* IRQ or vIRQ */
@@ -203,6 +207,7 @@ SYMBOL(vector_el1_s)
     stp x4, x5, [sp, #-16]!
     stp x2, x3, [sp, #-16]!
     stp x0, x1, [sp, #-16]!
+    mrs x0, ESR_EL1             /* Exception syndrome */
     b isr_l64_serr
 .balign 0x80
 /**
@@ -220,6 +225,8 @@ SYMBOL(vector_el1_s)
     stp x4, x5, [sp, #-16]!
     stp x2, x3, [sp, #-16]!
     stp x0, x1, [sp, #-16]!
+    mrs x0, ESR_EL1             /* Exception syndrome */
+    mrs x1, FAR_EL1             /* Exception fault address */
     b isr_l32_sync
 .balign 0x80
 /* IRQ or vIRQ */
@@ -262,6 +269,7 @@ SYMBOL(vector_el1_s)
     stp x4, x5, [sp, #-16]!
     stp x2, x3, [sp, #-16]!
     stp x0, x1, [sp, #-16]!
+    mrs x0, ESR_EL1             /* Exception syndrome */
     b isr_l32_serr
 .balign 0x80
 SYMBOL(vector_el1_e)
@@ -272,39 +280,26 @@ SYMBOL(vector_el1_e)
  * EL1 Current Exception level with SP_EL0 ISR's
  */
 ISR_S(isr_cel_spel0_sync)
+    bl intr_handler_kern_el0_sync
 1:
-    nop
-    nop
-    nop
-    nop
     b 1b
 ISR_E(isr_cel_spel0_sync)
 
 ISR_S(isr_cel_spel0_irq)
+    bl intr_handler_kern_el0_irq
 1:
-    nop
-    nop
-    nop
-    nop
     b 1b
 ISR_E(isr_cel_spel0_irq)
 
 ISR_S(isr_cel_spel0_fiq)
+    bl intr_handler_kern_el0_fiq
 1:
-    nop
-    nop
-    nop
-    nop
     b 1b
 ISR_E(isr_cel_spel0_fiq)
 
 ISR_S(isr_cel_spel0_serr)
-    mrs x0, ESR_EL1
+    bl intr_handler_kern_el0_serr
 1:
-    nop
-    nop
-    nop
-    nop
     b 1b
 ISR_E(isr_cel_spel0_serr)
 
@@ -312,39 +307,26 @@ ISR_E(isr_cel_spel0_serr)
  * EL1 Current Exception level with SP_EL1 ISR's
  */
 ISR_S(isr_cel_spel1_sync)
+    bl intr_handler_kern_el1_sync
 1:
-    nop
-    nop
-    nop
-    nop
     b 1b
 ISR_E(isr_cel_spel1_sync)
 
 ISR_S(isr_cel_spel1_irq)
+    bl intr_handler_kern_el1_irq
 1:
-    nop
-    nop
-    nop
-    nop
     b 1b
 ISR_E(isr_cel_spel1_irq)
 
 ISR_S(isr_cel_spel1_fiq)
+    bl intr_handler_kern_el1_fiq
 1:
-    nop
-    nop
-    nop
-    nop
     b 1b
 ISR_E(isr_cel_spel1_fiq)
 
 ISR_S(isr_cel_spel1_serr)
-    mrs x0, ESR_EL1
+    bl intr_handler_kern_el1_serr
 1:
-    nop
-    nop
-    nop
-    nop
     b 1b
 ISR_E(isr_cel_spel1_serr)
 
