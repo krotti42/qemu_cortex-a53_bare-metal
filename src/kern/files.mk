@@ -8,3 +8,5 @@ include $(KERN_DIR)/asm/files.mk
 include $(KERN_DIR)/lib/files.mk
 
 KERN_CSRC				+= $(KERN_DIR)/kern_main.c
+
+include $(KERN_DIR)/dev/files.mk

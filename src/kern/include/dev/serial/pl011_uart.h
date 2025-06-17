@@ -18,23 +18,11 @@
  *
  */
 
-#include <libkern.h>
+#ifndef _DEV_SERIAL_PL011_UART_H
+#define _DEV_SERIAL_PL011_UART_H
 
-#include <stdio.h>
-#include <string.h>
+extern void pl011_init(void);
+extern void pl011_putc(const char c);
+extern void pl011_puts(const char *s);
 
-#include <dev/dev_init.h>
-#include <dev/serial/pl011_uart.h>
-
-void kern_main(void)
-{
-    libkern_init();
-    dev_init();
-
-    pl011_puts("Hello World!\r\n");
-
-    while (1)
-        ;
-
-    libkern_fini();
-}
+#endif

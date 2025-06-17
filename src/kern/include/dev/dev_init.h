@@ -18,23 +18,9 @@
  *
  */
 
-#include <libkern.h>
+#ifndef _DEV_DEV_INIT_H
+#define _DEV_DEV_INIT_H
 
-#include <stdio.h>
-#include <string.h>
+extern int dev_init(void);
 
-#include <dev/dev_init.h>
-#include <dev/serial/pl011_uart.h>
-
-void kern_main(void)
-{
-    libkern_init();
-    dev_init();
-
-    pl011_puts("Hello World!\r\n");
-
-    while (1)
-        ;
-
-    libkern_fini();
-}
+#endif
