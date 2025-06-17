@@ -27,12 +27,12 @@ int _libkern_ofmt_parse(const char *s, struct _libkern_ofmt *fmt)
 {
     int i = 0;
     int j;
-    int flags_end;
+    int flags_end = 0;
     int minwidth_s = 0;
     int minwidth_e = 0;
     int precision_s = 0;
     int precision_e = 0;
-    int length_end, length_size;
+    int length_end, length_size = 0;
     size_t mul = 1;
     
     if (!s)
@@ -40,6 +40,8 @@ int _libkern_ofmt_parse(const char *s, struct _libkern_ofmt *fmt)
     
     if (!fmt)
         return -1;
+
+    memset(fmt, 0, sizeof(struct _libkern_ofmt));
     
     if (s[i] != '%')
         return -1;

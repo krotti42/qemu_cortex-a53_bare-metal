@@ -23,9 +23,9 @@
 /* Format integer (char) */
 int _libkern_ofmt_intc(struct _libkern_ofmt *fmt, const char val, int width, char *out)
 {
-    unsigned char tmp;
-    unsigned char rem_a;
-    unsigned char rem_b;
+    unsigned char tmp = 0;
+    unsigned char rem_a = 0;
+    unsigned char rem_b = 0;
     unsigned char shift = 0x80;
     unsigned char nib;
     size_t r_cnt = 0;
