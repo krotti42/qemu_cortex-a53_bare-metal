@@ -60,6 +60,22 @@ ENTRY_S(_start)
     isb
 
     /**
+     * Don't trap access from Advanced SIMD and floating-point
+     * registers in EL1 and EL0.
+     *
+     * NOTE:
+     * Without the compiler switch '-mgeneral-regs-only' the
+     * compiler GCC uses these registers in some cases
+     * (variadic arguments as example).
+     */
+    mrs x0, CPACR_EL1
+    mov x1, #3              /* Access from EL1 and EL0 not trapped */
+    lsl x1, x1, #20
+    orr x0, x0, x1
+    msr CPACR_EL1, x0
+    isb
+
+    /**
      * Zero .bss for C runtime
      */
     bl zero_bss
