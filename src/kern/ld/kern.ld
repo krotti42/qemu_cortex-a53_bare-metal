@@ -124,14 +124,17 @@ SECTIONS {
 
     .heap (NOLOAD): ALIGN(0x1000) {
         _heap_s = .;
-        . = . + (ORIGIN(RAM_HIKERN) + LENGTH(RAM_HIKERN)) - _heap_s - STACK_SIZE_KERN;
+        . = . + (ORIGIN(RAM_HIKERN) + LENGTH(RAM_HIKERN)) - _heap_s - (2 * STACK_SIZE_KERN);
         _heap_e = .;
     } > RAM_HIKERN
 
     .stack (NOLOAD): ALIGN(0x1000) {
-        _stack_hi_s = .;
+        _stack_el0_s = .;
         . = . + STACK_SIZE_KERN;
-        _stack_hi_e = .;
+        _stack_el0_e = .;
+        _stack_el1_s = .;
+        . = . + STACK_SIZE_KERN;
+        _stack_el1_e = .;
     } > RAM_HIKERN
 
     /DISCARD/ : {

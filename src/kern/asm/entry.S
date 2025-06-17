@@ -30,10 +30,17 @@
 
 ENTRY_S(_start)
     /**
-     * Setup EL1 stack pointer
+     * Setup EL1 handler stack pointer
      */
-    msr SPsel, #1           /* Select EL1 stack */
-    ldr x0, =_stack_hi_e    /* Load stack address (defined in linker script) */
+    msr SPsel, #1           /* Select handler stack */
+    ldr x0, =_stack_el1_e   /* Load stack address (defined in linker script) */
+    mov sp, x0              /* Setup stack pointer */
+
+    /**
+     * Setup EL1 thread stack pointer
+     */
+    msr SPsel, #0           /* Select thread stack */
+    ldr x0, =_stack_el0_e   /* Load stack address (defined in linker script) */
     mov sp, x0              /* Setup stack pointer */
 
     /**
