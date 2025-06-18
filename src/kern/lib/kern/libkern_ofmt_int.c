@@ -33,20 +33,22 @@ int _libkern_ofmt_intc(struct _libkern_ofmt *fmt, const char val, int width, cha
     size_t i, j, k;
     int sign = 0;
     
-    if (fmt->f_itype != FMT_ITYPE_UCHAR) {
+    if (fmt->f_otype == FMT_OTYPE_SDECIMAL) {
         if (val & 0x80) {
             tmp = ~val;
             tmp++;
             sign = 1;
-        } else
+        } else {
             tmp = val;
+        }
     } else {
         tmp = val;
     }
     
     /* Analyze */
     switch (fmt->f_otype) {
-        case FMT_OTYPE_DECIMAL:
+        case FMT_OTYPE_SDECIMAL:
+        case FMT_OTYPE_UDECIMAL:
             if (tmp == 0) {
                 r_cnt++;
             } else {
@@ -172,13 +174,14 @@ int _libkern_ofmt_intc(struct _libkern_ofmt *fmt, const char val, int width, cha
             return -1;
     }
     
-    if (fmt->f_itype != FMT_ITYPE_UCHAR) {
+    if (fmt->f_otype == FMT_OTYPE_SDECIMAL) {
         if (val & 0x80) {
             tmp = ~val;
             tmp++;
             sign = 1;
-        } else
+        } else {
             tmp = val;
+        }
     } else {
         tmp = val;
     }
@@ -186,7 +189,8 @@ int _libkern_ofmt_intc(struct _libkern_ofmt *fmt, const char val, int width, cha
     /* Build */
     if (out) {
         switch (fmt->f_otype) {
-            case FMT_OTYPE_DECIMAL:
+            case FMT_OTYPE_SDECIMAL:
+            case FMT_OTYPE_UDECIMAL:
                 k = 0;
                 out[o_cnt] = '\0';
                 
@@ -492,20 +496,22 @@ int _libkern_ofmt_ints(struct _libkern_ofmt *fmt, const short val, int width, ch
     size_t i, j, k;
     int sign = 0;
     
-    if (fmt->f_itype != FMT_ITYPE_USHORT) {
-        if (val & 0x80) {
+    if (fmt->f_otype == FMT_OTYPE_SDECIMAL) {
+        if (val & 0x8000) {
             tmp = ~val;
             tmp++;
             sign = 1;
-        } else
+        } else {
             tmp = val;
+        }
     } else {
         tmp = val;
     }
     
     /* Analyze */
     switch (fmt->f_otype) {
-        case FMT_OTYPE_DECIMAL:
+        case FMT_OTYPE_SDECIMAL:
+        case FMT_OTYPE_UDECIMAL:
             if (tmp == 0) {
                 r_cnt++;
             } else {
@@ -637,13 +643,14 @@ int _libkern_ofmt_ints(struct _libkern_ofmt *fmt, const short val, int width, ch
             return -1;
     }
     
-    if (fmt->f_itype != FMT_ITYPE_USHORT) {
-        if (val & 0x80) {
+    if (fmt->f_otype == FMT_OTYPE_SDECIMAL) {
+        if (val & 0x8000) {
             tmp = ~val;
             tmp++;
             sign = 1;
-        } else
+        } else {
             tmp = val;
+        }
     } else {
         tmp = val;
     }
@@ -651,7 +658,8 @@ int _libkern_ofmt_ints(struct _libkern_ofmt *fmt, const short val, int width, ch
     /* Build */
     if (out) {
         switch (fmt->f_otype) {
-            case FMT_OTYPE_DECIMAL:
+            case FMT_OTYPE_SDECIMAL:
+            case FMT_OTYPE_UDECIMAL:
                 k = 0;
                 out[o_cnt] = '\0';
                 
@@ -917,6 +925,8 @@ int _libkern_ofmt_ints(struct _libkern_ofmt *fmt, const short val, int width, ch
                         } else {
                             out[k] = nib + '0';
                         }
+                    } else {
+                        out[k] = '0';
                     }
                     
                     shift >>= 4;
@@ -935,7 +945,7 @@ int _libkern_ofmt_ints(struct _libkern_ofmt *fmt, const short val, int width, ch
 /* Format integer */
 int _libkern_ofmt_int(struct _libkern_ofmt *fmt, const int val, int width, char *out)
 {
-    unsigned int tmp;
+    unsigned int tmp = 0;
     unsigned int rem_a;
     unsigned int rem_b;
     unsigned int shift = 0x80000000;
@@ -945,20 +955,22 @@ int _libkern_ofmt_int(struct _libkern_ofmt *fmt, const int val, int width, char 
     size_t i, j, k;
     int sign = 0;
     
-    if (fmt->f_itype != FMT_ITYPE_UINT) {
-        if (val & 0x80) {
+    if (fmt->f_otype == FMT_OTYPE_SDECIMAL) {
+        if (val & 0x80000000) {
             tmp = ~val;
             tmp++;
             sign = 1;
-        } else
+        } else {
             tmp = val;
+        }
     } else {
         tmp = val;
     }
     
     /* Analyze */
     switch (fmt->f_otype) {
-        case FMT_OTYPE_DECIMAL:
+        case FMT_OTYPE_SDECIMAL:
+        case FMT_OTYPE_UDECIMAL:
             if (tmp == 0) {
                 r_cnt++;
             } else {
@@ -1090,13 +1102,14 @@ int _libkern_ofmt_int(struct _libkern_ofmt *fmt, const int val, int width, char 
             return -1;
     }
     
-    if (fmt->f_itype != FMT_ITYPE_UINT) {
-        if (val & 0x80) {
+    if (fmt->f_otype == FMT_OTYPE_SDECIMAL) {
+        if (val & 0x80000000) {
             tmp = ~val;
             tmp++;
             sign = 1;
-        } else
+        } else {
             tmp = val;
+        }
     } else {
         tmp = val;
     }
@@ -1104,7 +1117,8 @@ int _libkern_ofmt_int(struct _libkern_ofmt *fmt, const int val, int width, char 
     /* Build */
     if (out) {
         switch (fmt->f_otype) {
-            case FMT_OTYPE_DECIMAL:
+            case FMT_OTYPE_SDECIMAL:
+            case FMT_OTYPE_UDECIMAL:
                 k = 0;
                 out[o_cnt] = '\0';
                 
@@ -1370,6 +1384,8 @@ int _libkern_ofmt_int(struct _libkern_ofmt *fmt, const int val, int width, char 
                         } else {
                             out[k] = nib + '0';
                         }
+                    } else {
+                        out[k] = '0';
                     }
                     
                     shift >>= 4;
@@ -1398,20 +1414,22 @@ int _libkern_ofmt_intl(struct _libkern_ofmt *fmt, const long int val, int width,
     size_t i, j, k;
     int sign = 0;
     
-    if (fmt->f_itype != FMT_ITYPE_ULONGINT) {
-        if (val & 0x80) {
+    if (fmt->f_otype == FMT_OTYPE_SDECIMAL) {
+        if (val & 0x8000000000000000UL) {
             tmp = ~val;
             tmp++;
             sign = 1;
-        } else
+        } else {
             tmp = val;
+        }
     } else {
         tmp = val;
     }
     
     /* Analyze */
     switch (fmt->f_otype) {
-        case FMT_OTYPE_DECIMAL:
+        case FMT_OTYPE_SDECIMAL:
+        case FMT_OTYPE_UDECIMAL:
             if (tmp == 0) {
                 r_cnt++;
             } else {
@@ -1543,13 +1561,14 @@ int _libkern_ofmt_intl(struct _libkern_ofmt *fmt, const long int val, int width,
             return -1;
     }
     
-    if (fmt->f_itype != FMT_ITYPE_ULONGINT) {
-        if (val & 0x80) {
+    if (fmt->f_otype == FMT_OTYPE_SDECIMAL) {
+        if (val & 0x8000000000000000UL) {
             tmp = ~val;
             tmp++;
             sign = 1;
-        } else
+        } else {
             tmp = val;
+        }
     } else {
         tmp = val;
     }
@@ -1557,7 +1576,8 @@ int _libkern_ofmt_intl(struct _libkern_ofmt *fmt, const long int val, int width,
     /* Build */
     if (out) {
         switch (fmt->f_otype) {
-            case FMT_OTYPE_DECIMAL:
+            case FMT_OTYPE_SDECIMAL:
+            case FMT_OTYPE_UDECIMAL:
                 k = 0;
                 out[o_cnt] = '\0';
                 
@@ -1823,6 +1843,8 @@ int _libkern_ofmt_intl(struct _libkern_ofmt *fmt, const long int val, int width,
                         } else {
                             out[k] = nib + '0';
                         }
+                    } else {
+                        out[k] = '0';
                     }
                     
                     shift >>= 4;

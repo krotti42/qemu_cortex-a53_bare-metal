@@ -24,6 +24,7 @@
 #include <stdlib.h>
 
 enum _libkern_ofmt_itype_e {
+    FMT_ITYPE_NONE,
     FMT_ITYPE_CHAR,
     FMT_ITYPE_UCHAR,
     FMT_ITYPE_SHORT,
@@ -35,19 +36,23 @@ enum _libkern_ofmt_itype_e {
     FMT_ITYPE_LONGLONGINT,
     FMT_ITYPE_ULONGLONGINT,
     FMT_ITYPE_POINTER,
+    FMT_ITYPE_STRING,
+    FMT_ITYPE_LENGTH
 };
 
 enum _libkern_ofmt_otype_e {
+    FMT_OTYPE_NONE,
     FMT_OTYPE_BINARY,
     FMT_OTYPE_OCTAL,
-    FMT_OTYPE_DECIMAL,
+    FMT_OTYPE_UDECIMAL,
+    FMT_OTYPE_SDECIMAL,
     FMT_OTYPE_HEXADECIMALLOWER,
     FMT_OTYPE_HEXADECIMALUPPER,
     FMT_OTYPE_CHAR,
     FMT_OTYPE_STRING,
     FMT_OTYPE_POINTER,
     FMT_OTYPE_LENGTH,
-    FMT_OTYPE_PERCENTAGE,
+    FMT_OTYPE_PERCENTAGE
 };
 
 enum _libkern_ofmt_justify_e {
@@ -62,11 +67,11 @@ enum _libkern_ofmt_sign_e {
 };
 
 struct _libkern_ofmt {
-    int f_itype;
-    int f_otype;
+    enum _libkern_ofmt_itype_e f_itype;
+    enum _libkern_ofmt_otype_e f_otype;
     int f_size;
-    int f_justify;
-    int f_sign;
+    enum _libkern_ofmt_justify_e f_justify;
+    enum _libkern_ofmt_sign_e f_sign;
     int f_prefix;
     int f_padwzero;
     int f_widtharg;

@@ -41,8 +41,6 @@ int _libkern_ofmt_parse(const char *s, struct _libkern_ofmt *fmt)
     if (!fmt)
         return -1;
 
-    memset(fmt, 0, sizeof(struct _libkern_ofmt));
-    
     if (s[i] != '%')
         return -1;
     
@@ -191,7 +189,7 @@ int _libkern_ofmt_parse(const char *s, struct _libkern_ofmt *fmt)
                     return -1;
             }
             
-            fmt->f_otype = FMT_OTYPE_DECIMAL;
+            fmt->f_otype = FMT_OTYPE_SDECIMAL;
             break;
         }
         case 'u':
@@ -215,7 +213,7 @@ int _libkern_ofmt_parse(const char *s, struct _libkern_ofmt *fmt)
                     return -1;
             }
             
-            fmt->f_otype = FMT_OTYPE_DECIMAL;
+            fmt->f_otype = FMT_OTYPE_UDECIMAL;
             break;
         case 'b':
             switch (length_size) {
@@ -311,18 +309,23 @@ int _libkern_ofmt_parse(const char *s, struct _libkern_ofmt *fmt)
             break;
         case 'c':
             fmt->f_otype = FMT_OTYPE_CHAR;
+            fmt->f_itype = FMT_ITYPE_CHAR;
             break;
         case 's':
             fmt->f_otype = FMT_OTYPE_STRING;
+            fmt->f_itype = FMT_ITYPE_STRING;
             break;
         case 'p':
             fmt->f_otype = FMT_OTYPE_POINTER;
+            fmt->f_itype = FMT_ITYPE_POINTER;
             break;
         case 'n':
             fmt->f_otype = FMT_OTYPE_LENGTH;
+            fmt->f_itype = FMT_ITYPE_LENGTH;
             break;
         case '%':
             fmt->f_otype = FMT_OTYPE_PERCENTAGE;
+            fmt->f_itype = FMT_ITYPE_NONE;
             break;
         default:
             return -1;

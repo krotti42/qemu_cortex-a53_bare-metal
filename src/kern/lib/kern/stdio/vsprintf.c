@@ -19,6 +19,7 @@
  */
 
 #include <stdarg.h>
+#include <string.h>
 #include <stdio.h>
 
 #include <_libkern.h>
@@ -30,6 +31,8 @@ int vsprintf(char *str, const char *format, va_list args)
     size_t k = 0;
     int width;
     struct _libkern_ofmt fmt;
+
+    memset(&fmt, 0, sizeof(struct _libkern_ofmt));
     
     while (format[k] != '\0') {
         if (format[k] == '%') {
@@ -37,7 +40,8 @@ int vsprintf(char *str, const char *format, va_list args)
             k += i;
             
             switch (fmt.f_otype) {
-                case FMT_OTYPE_DECIMAL:
+                case FMT_OTYPE_SDECIMAL:
+                case FMT_OTYPE_UDECIMAL:
                 {
                     switch (fmt.f_itype) {
                         case FMT_ITYPE_INT:
