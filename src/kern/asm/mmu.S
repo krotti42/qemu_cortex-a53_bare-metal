@@ -47,7 +47,7 @@ SYMBOL(tlb_user_lvl1)           /* 512*1GB regions for userspace */
 LOFUNCTION_S(lo_tlb_kern_zero)
     /* Set all entries to invalid in level 0 table */
     adr x0, tlb_kern_lvl0
-    mov x1, #256
+    mov x1, #512
 1:
     str xzr, [x0], #8
     subs x1, x1, #1
@@ -55,7 +55,7 @@ LOFUNCTION_S(lo_tlb_kern_zero)
     bne 1b
     /* Set all entries to invalid in level 1 table */
     adr x0, tlb_kern_lvl1
-    mov x1, #256
+    mov x1, #512
 2:
     str xzr, [x0], #8
     subs x1, x1, #1
@@ -63,7 +63,7 @@ LOFUNCTION_S(lo_tlb_kern_zero)
     bne 2b
     /* Set all entries to invalid in level 2 table */
     adr x0, tlb_kern_lvl2
-    mov x1, #256
+    mov x1, #512
 3:
     str xzr, [x0], #8
     subs x1, x1, #1
@@ -78,7 +78,7 @@ LOFUNCTION_E(lo_tlb_kern_zero)
 LOFUNCTION_S(lo_tlb_user_zero)
     /*Set all entries to invalid in level 0 table */
     adr x0, tlb_user_lvl0
-    mov x1, #256
+    mov x1, #512
 1:
     str xzr, [x0], #8
     subs x1, x1, #1
@@ -86,7 +86,7 @@ LOFUNCTION_S(lo_tlb_user_zero)
     bne 1b
     /* Set all entries to invalid in level 1 table */
     adr x0, tlb_user_lvl1
-    mov x1, #256
+    mov x1, #512
 2:
     str xzr, [x0], #8
     subs x1, x1, #1
