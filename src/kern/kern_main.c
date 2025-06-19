@@ -26,12 +26,15 @@
 #include <dev/dev_init.h>
 #include <dev/serial/pl011_uart.h>
 
+extern void kern_intr_init(void);
+
 void kern_main(void)
 {
+
     libkern_init();
     dev_init();
-
-    pl011_puts("Hello World!\r\n");
+    kern_intr_init();
+    pl011_puts("QEMU Cortex-A53 (ARMv8-A) bare-metal example\r\n");
 
     while (1)
         ;

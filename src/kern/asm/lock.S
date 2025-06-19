@@ -18,49 +18,36 @@
  *
  */
 
-/**
- * ARMv8 Generic Timer
- */
-
 #define _ASM_ASSEMBLY_
 
 #include <asm.h>
 
 .text
 
-FUNCTION_S(timer_get_freq)
-    mov x1, #0xFFFFFFFF
-    mrs x0, CNTFRQ_EL0
-    and x0, x0, x1
+FUNCTION_S(_mutex_trylock)
+    prfm PSTL1STRM, [x0]
+    ldaxr w1, [x0]
+    cbnz w1, 1f
+    mov w1, #1
+    stxr w2, w1, [x0]
+    cbnz w2, 1f
+    mov x0, #0
+    dsb SY
     ret
-FUNCTION_E(timer_get_freq)
+1:
+    mov x0, #1
+    ret
+FUNCTION_E(_mutex_trylock)
 
-FUNCTION_S(timer_phys_enable)
-    mrs x0, CNTP_CTL_EL0
-    orr x0, x0, #(1 << 0)
-    msr CNTP_CTL_EL0, x0
-    isb
+FUNCTION_S(_mutex_unlock)
+    prfm PSTL1STRM, [x0]
+1:
+    ldxr w1, [x0]
+    mov w1, #0
+    stxr w2, w1, [x0]
+    cbnz w2, 1b
+    dsb SY
     ret
-FUNCTION_E(timer_phys_enable)
-
-FUNCTION_S(timer_phys_set_compvalue)
-    msr CNTP_TVAL_EL0, x0
-    isb
-    ret
-FUNCTION_E(timer_phys_set_compvalue)
-
-FUNCTION_S(timer_virt_enable)
-    mrs x0, CNTV_CTL_EL0
-    orr x0, x0, #(1 << 0)
-    msr CNTV_CTL_EL0, x0
-    isb
-    ret
-FUNCTION_E(timer_virt_enable)
-
-FUNCTION_S(timer_virt_set_compvalue)
-    msr CNTV_CVAL_EL0, x0
-    isb
-    ret
-FUNCTION_E(timer_virt_set_compvalue)
+FUNCTION_E(_mutex_unlock)
 
 .end

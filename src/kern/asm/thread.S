@@ -18,49 +18,27 @@
  *
  */
 
-/**
- * ARMv8 Generic Timer
- */
-
 #define _ASM_ASSEMBLY_
 
 #include <asm.h>
 
 .text
 
-FUNCTION_S(timer_get_freq)
-    mov x1, #0xFFFFFFFF
-    mrs x0, CNTFRQ_EL0
-    and x0, x0, x1
+FUNCTION_S(thread_get_stack)
+    mov x0, sp
     ret
-FUNCTION_E(timer_get_freq)
+FUNCTION_E(thread_get_stack)
 
-FUNCTION_S(timer_phys_enable)
-    mrs x0, CNTP_CTL_EL0
-    orr x0, x0, #(1 << 0)
-    msr CNTP_CTL_EL0, x0
-    isb
-    ret
-FUNCTION_E(timer_phys_enable)
+FUNCTION_S(thread_start)
+    msr ELR_EL1, x0
+    mov sp, x1
+    mov x2, #0b0100
+    msr SPSR_EL1, x2
+    eret
+FUNCTION_E(thread_start)
 
-FUNCTION_S(timer_phys_set_compvalue)
-    msr CNTP_TVAL_EL0, x0
-    isb
-    ret
-FUNCTION_E(timer_phys_set_compvalue)
-
-FUNCTION_S(timer_virt_enable)
-    mrs x0, CNTV_CTL_EL0
-    orr x0, x0, #(1 << 0)
-    msr CNTV_CTL_EL0, x0
-    isb
-    ret
-FUNCTION_E(timer_virt_enable)
-
-FUNCTION_S(timer_virt_set_compvalue)
-    msr CNTV_CVAL_EL0, x0
-    isb
-    ret
-FUNCTION_E(timer_virt_set_compvalue)
+FUNCTION_S(thread_exit)
+    svc #0
+FUNCTION_E(thread_exit)
 
 .end

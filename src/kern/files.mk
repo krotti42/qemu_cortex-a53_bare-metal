@@ -9,5 +9,6 @@ include $(KERN_DIR)/lib/files.mk
 
 KERN_CSRC				+= $(KERN_DIR)/kern_main.c
 KERN_CSRC				+= $(KERN_DIR)/kern_intr.c
+KERN_CSRC				+= $(KERN_DIR)/kern_panic.c
 
 include $(KERN_DIR)/dev/files.mk

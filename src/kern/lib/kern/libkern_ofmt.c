@@ -32,7 +32,8 @@ int _libkern_ofmt_parse(const char *s, struct _libkern_ofmt *fmt)
     int minwidth_e = 0;
     int precision_s = 0;
     int precision_e = 0;
-    int length_end, length_size = 0;
+    int length_end = 0;
+    int length_size = 0;
     size_t mul = 1;
     
     if (!s)

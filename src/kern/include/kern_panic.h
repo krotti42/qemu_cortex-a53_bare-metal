@@ -18,49 +18,12 @@
  *
  */
 
-/**
- * ARMv8 Generic Timer
- */
+#ifndef _KERN_PANIC_H
+#define _KERN_PANIC_H
 
-#define _ASM_ASSEMBLY_
+extern void kern_panic_thread(struct _isr_regs_aarch64 *regs, int type);
+extern void kern_panic_handler(struct _isr_regs_aarch64 *regs, int type);
+extern void kern_panic_user64(struct _isr_regs_aarch64 *regs, int type);
+extern void kern_panic_user32(struct _isr_regs_aarch32 *regs, int type);
 
-#include <asm.h>
-
-.text
-
-FUNCTION_S(timer_get_freq)
-    mov x1, #0xFFFFFFFF
-    mrs x0, CNTFRQ_EL0
-    and x0, x0, x1
-    ret
-FUNCTION_E(timer_get_freq)
-
-FUNCTION_S(timer_phys_enable)
-    mrs x0, CNTP_CTL_EL0
-    orr x0, x0, #(1 << 0)
-    msr CNTP_CTL_EL0, x0
-    isb
-    ret
-FUNCTION_E(timer_phys_enable)
-
-FUNCTION_S(timer_phys_set_compvalue)
-    msr CNTP_TVAL_EL0, x0
-    isb
-    ret
-FUNCTION_E(timer_phys_set_compvalue)
-
-FUNCTION_S(timer_virt_enable)
-    mrs x0, CNTV_CTL_EL0
-    orr x0, x0, #(1 << 0)
-    msr CNTV_CTL_EL0, x0
-    isb
-    ret
-FUNCTION_E(timer_virt_enable)
-
-FUNCTION_S(timer_virt_set_compvalue)
-    msr CNTV_CVAL_EL0, x0
-    isb
-    ret
-FUNCTION_E(timer_virt_set_compvalue)
-
-.end
+#endif

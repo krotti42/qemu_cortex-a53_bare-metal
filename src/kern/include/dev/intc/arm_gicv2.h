@@ -18,49 +18,12 @@
  *
  */
 
-/**
- * ARMv8 Generic Timer
- */
+#ifndef _DEV_INTC_ARM_GICV2_H
+#define _DEV_INTC_ARM_GICV2_H
 
-#define _ASM_ASSEMBLY_
+extern void gicv2_init(void);
+extern int gicv2_get_irq(void);
+extern void gicv2_irq_enable(int nr);
+extern void gicv2_irq_clear(int nr);
 
-#include <asm.h>
-
-.text
-
-FUNCTION_S(timer_get_freq)
-    mov x1, #0xFFFFFFFF
-    mrs x0, CNTFRQ_EL0
-    and x0, x0, x1
-    ret
-FUNCTION_E(timer_get_freq)
-
-FUNCTION_S(timer_phys_enable)
-    mrs x0, CNTP_CTL_EL0
-    orr x0, x0, #(1 << 0)
-    msr CNTP_CTL_EL0, x0
-    isb
-    ret
-FUNCTION_E(timer_phys_enable)
-
-FUNCTION_S(timer_phys_set_compvalue)
-    msr CNTP_TVAL_EL0, x0
-    isb
-    ret
-FUNCTION_E(timer_phys_set_compvalue)
-
-FUNCTION_S(timer_virt_enable)
-    mrs x0, CNTV_CTL_EL0
-    orr x0, x0, #(1 << 0)
-    msr CNTV_CTL_EL0, x0
-    isb
-    ret
-FUNCTION_E(timer_virt_enable)
-
-FUNCTION_S(timer_virt_set_compvalue)
-    msr CNTV_CVAL_EL0, x0
-    isb
-    ret
-FUNCTION_E(timer_virt_set_compvalue)
-
-.end
+#endif

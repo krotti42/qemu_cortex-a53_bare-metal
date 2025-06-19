@@ -18,10 +18,21 @@
  *
  */
 
-#include <stdio.h>
 #include <string.h>
 
+#include <kern_intr.h>
+#include <kern_panic.h>
+
 #include <dev/serial/pl011_uart.h>
+#include <dev/intc/arm_gicv2.h>
+
+extern void intr_disable(void);
+extern unsigned long int timer_get_freq(void);
+extern void timer_phys_set_compvalue(unsigned long int);
+extern void timer_phys_enable();
+
+struct _ret_regs_aarch64 ctx64_ret;
+struct _ret_regs_aarch32 ctx32_ret;
 
 #define ESR_EC_UNKNOWN              0
 #define ESR_EC_TRAPWF               1
@@ -57,117 +68,269 @@
 #define ESR_EC_BKPT32               56
 #define ESR_EC_BRK64                60
 
-void intr_handler_kern_el0_sync(unsigned long int esyn, unsigned long int faddr)
+void kern_intr_init(void)
 {
-    char message[512];
-
-    pl011_puts("EXCEPTION: Synchronous (kernel thread)\r\n");
-    memset(message, 0, 512);
-    sprintf(message, "Fault address: 0x%016llX\r\n", faddr);
-    pl011_puts(message);
-    sprintf(message, "Reason (raw) : 0x%016llX\r\n", esyn);
-    pl011_puts("PANIC    : loop forever\r\n");
-
-    /**
-     * Panic (currently loop forever)
-     */
-    while (1)
-        ;
+    memset(&ctx64_ret, 0, sizeof(struct _ret_regs_aarch64));
+    memset(&ctx32_ret, 0, sizeof(struct _ret_regs_aarch32));
+    gicv2_init();
+    gicv2_irq_enable(30);
+    timer_phys_set_compvalue(timer_get_freq() / 1000);
+    timer_phys_enable();
 }
 
-void intr_handler_kern_el0_irq(void)
+struct _ret_regs_aarch64 *intr_handler_kern_sp0_sync(unsigned long int regs)
 {
-    pl011_puts("IRQ (kernel thread)\r\n");
+    struct _isr_regs_aarch64 *p_regs;
 
-    /**
-     * Panic (currently loop forever)
-     */
-    while (1)
-        ;
+    p_regs = (struct _isr_regs_aarch64 *) regs;
+    ctx64_ret.elr = p_regs->elr;
+    ctx64_ret.sp = p_regs->sp;
+    ctx64_ret.spsr = p_regs->spsr;
+    intr_disable();
+    kern_panic_thread(p_regs, INTR_SYNC);
+
+    return &ctx64_ret;
 }
 
-void intr_handler_kern_el0_fiq(void)
+struct _ret_regs_aarch64 *intr_handler_kern_sp0_irq(unsigned long int regs)
 {
-    pl011_puts("FIQ (kernel thread)\r\n");
+    struct _isr_regs_aarch64 *p_regs;
+    int ret;
 
-    /**
-     * Panic (currently loop forever)
-     */
-    while (1)
-        ;
+    p_regs = (struct _isr_regs_aarch64 *) regs;
+    ctx64_ret.elr = p_regs->elr;
+    ctx64_ret.sp = p_regs->sp;
+    ctx64_ret.spsr = p_regs->spsr;
+    ret = gicv2_get_irq();
+
+    if (ret != 30) {
+        intr_disable();
+        kern_panic_thread(p_regs, INTR_IRQ);
+    } else {
+        timer_phys_set_compvalue(timer_get_freq() / 1000);
+        gicv2_irq_clear(ret);
+    }
+
+    return &ctx64_ret;
+
 }
 
-void intr_handler_kern_el0_serr(unsigned long int esyn)
+struct _ret_regs_aarch64 *intr_handler_kern_sp0_fiq(unsigned long int regs)
 {
-    char message[512];
+    struct _isr_regs_aarch64 *p_regs;
 
-    pl011_puts("EXCEPTION: SError (kernel thread)\r\n");
-    memset(message, 0, 512);
-    sprintf(message, "Reason (raw) : 0x%016llX\r\n", esyn);
-    pl011_puts("PANIC    : loop forever\r\n");
+    p_regs = (struct _isr_regs_aarch64 *) regs;
+    ctx64_ret.elr = p_regs->elr;
+    ctx64_ret.sp = p_regs->sp;
+    ctx64_ret.spsr = p_regs->spsr;
+    intr_disable();
+    kern_panic_thread(p_regs, INTR_FIQ);
 
-    /**
-     * Panic (currently loop forever)
-     */
-    while (1)
-        ;
+    return &ctx64_ret;
 }
 
-void intr_handler_kern_el1_sync(unsigned long int esyn, unsigned long int faddr)
+struct _ret_regs_aarch64 *intr_handler_kern_sp0_serr(unsigned long int regs)
 {
-    char message[512];
+    struct _isr_regs_aarch64 *p_regs;
 
-    pl011_puts("EXCEPTION: Synchronous (kernel handler)\r\n");
-    memset(message, 0, 512);
-    sprintf(message, "Fault address: 0x%016llX\r\n", faddr);
-    pl011_puts(message);
-    sprintf(message, "Reason (raw) : 0x%016llX\r\n", esyn);
-    pl011_puts("PANIC    : loop forever\r\n");
+    p_regs = (struct _isr_regs_aarch64 *) regs;
+    ctx64_ret.elr = p_regs->elr;
+    ctx64_ret.sp = p_regs->sp;
+    ctx64_ret.spsr = p_regs->spsr;
+    intr_disable();
+    kern_panic_thread(p_regs, INTR_SERR);
 
-    /**
-     * Panic (currently loop forever)
-     */
-    while (1)
-        ;
+    return &ctx64_ret;
 }
 
-void intr_handler_kern_el1_irq(void)
+struct _ret_regs_aarch64 *intr_handler_kern_sp1_sync(unsigned long int regs)
 {
-    pl011_puts("IRQ (kernel handler)\r\n");
+    struct _isr_regs_aarch64 *p_regs;
 
-    /**
-     * Panic (currently loop forever)
-     */
-    while (1)
-        ;
+    p_regs = (struct _isr_regs_aarch64 *) regs;
+    ctx64_ret.elr = p_regs->elr;
+    ctx64_ret.sp = p_regs->sp;
+    ctx64_ret.spsr = p_regs->spsr;
+    intr_disable();
+    kern_panic_handler(p_regs, INTR_SYNC);
+
+    return &ctx64_ret;
 }
 
-void intr_handler_kern_el1_fiq(void)
+struct _ret_regs_aarch64 *intr_handler_kern_sp1_irq(unsigned long int regs)
 {
-    pl011_puts("FIQ (kernel handler)\r\n");
+    struct _isr_regs_aarch64 *p_regs;
+    int ret;
 
-    /**
-     * Panic (currently loop forever)
-     */
-    while (1)
-        ;
+    p_regs = (struct _isr_regs_aarch64 *) regs;
+    ctx64_ret.elr = p_regs->elr;
+    ctx64_ret.sp = p_regs->sp;
+    ctx64_ret.spsr = p_regs->spsr;
+    ret = gicv2_get_irq();
+
+    if (ret != 30) {
+        intr_disable();
+        kern_panic_handler(p_regs, INTR_IRQ);
+    } else {
+        timer_phys_set_compvalue(timer_get_freq() / 1000);
+        gicv2_irq_clear(ret);
+    }
+
+    return &ctx64_ret;
 }
 
-void intr_handler_kern_el1_serr(unsigned long int esyn)
+struct _ret_regs_aarch64 *intr_handler_kern_sp1_fiq(unsigned long int regs)
 {
+    struct _isr_regs_aarch64 *p_regs;
 
-    char message[512];
+    p_regs = (struct _isr_regs_aarch64 *) regs;
+    ctx64_ret.elr = p_regs->elr;
+    ctx64_ret.sp = p_regs->sp;
+    ctx64_ret.spsr = p_regs->spsr;
+    intr_disable();
+    kern_panic_handler(p_regs, INTR_FIQ);
 
-    pl011_puts("EXCEPTION: SError (kernel handler)\r\n");
-    memset(message, 0, 512);
-    sprintf(message, "Reason (raw) : 0x%016llX\r\n", esyn);
-    pl011_puts("PANIC    : loop forever\r\n");
-
-    /**
-     * Panic (currently loop forever)
-     */
-    while (1)
-        ;
+    return &ctx64_ret;
 }
 
+struct _ret_regs_aarch64 *intr_handler_kern_sp1_serr(unsigned long int regs)
+{
+    struct _isr_regs_aarch64 *p_regs;
 
+    p_regs = (struct _isr_regs_aarch64 *) regs;
+    ctx64_ret.elr = p_regs->elr;
+    ctx64_ret.sp = p_regs->sp;
+    ctx64_ret.spsr = p_regs->spsr;
+    intr_disable();
+    kern_panic_handler(p_regs, INTR_SERR);
+
+    return &ctx64_ret;
+}
+
+struct _ret_regs_aarch64 *intr_handler_user64_sync(unsigned long int regs)
+{
+    struct _isr_regs_aarch64 *p_regs;
+
+    p_regs = (struct _isr_regs_aarch64 *) regs;
+    ctx64_ret.elr = p_regs->elr;
+    ctx64_ret.sp = p_regs->sp;
+    ctx64_ret.spsr = p_regs->spsr;
+    intr_disable();
+    kern_panic_user64(p_regs, INTR_SYNC);
+
+    return &ctx64_ret;
+}
+
+struct _ret_regs_aarch64 *intr_handler_user64_irq(unsigned long int regs)
+{
+    struct _isr_regs_aarch64 *p_regs;
+    int ret;
+
+    p_regs = (struct _isr_regs_aarch64 *) regs;
+    ctx64_ret.elr = p_regs->elr;
+    ctx64_ret.sp = p_regs->sp;
+    ctx64_ret.spsr = p_regs->spsr;
+    ret = gicv2_get_irq();
+
+    if (ret != 30) {
+        intr_disable();
+        kern_panic_user64(p_regs, INTR_IRQ);
+    } else {
+        timer_phys_set_compvalue(timer_get_freq() / 1000);
+        gicv2_irq_clear(ret);
+    }
+
+    return &ctx64_ret;
+}
+
+struct _ret_regs_aarch64 *intr_handler_user64_fiq(unsigned long int regs)
+{
+    struct _isr_regs_aarch64 *p_regs;
+
+    p_regs = (struct _isr_regs_aarch64 *) regs;
+    ctx64_ret.elr = p_regs->elr;
+    ctx64_ret.sp = p_regs->sp;
+    ctx64_ret.spsr = p_regs->spsr;
+    intr_disable();
+    kern_panic_user64(p_regs, INTR_FIQ);
+
+    return &ctx64_ret;
+}
+
+struct _ret_regs_aarch64 *intr_handler_user64_serr(unsigned long int regs)
+{
+    struct _isr_regs_aarch64 *p_regs;
+
+    p_regs = (struct _isr_regs_aarch64 *) regs;
+    ctx64_ret.elr = p_regs->elr;
+    ctx64_ret.sp = p_regs->sp;
+    ctx64_ret.spsr = p_regs->spsr;
+    intr_disable();
+    kern_panic_user64(p_regs, INTR_SERR);
+
+    return &ctx64_ret;
+}
+
+struct _ret_regs_aarch32 *intr_handler_user32_sync(unsigned long int regs)
+{
+    struct _isr_regs_aarch32 *p_regs;
+
+    p_regs = (struct _isr_regs_aarch32 *) regs;
+    ctx32_ret.elr = p_regs->elr;
+    ctx32_ret.sp = p_regs->sp;
+    ctx32_ret.spsr = p_regs->spsr;
+    intr_disable();
+    kern_panic_user32(p_regs, INTR_SYNC);
+
+    return &ctx32_ret;
+}
+
+struct _ret_regs_aarch32 *intr_handler_user32_irq(unsigned long int regs)
+{
+    struct _isr_regs_aarch32 *p_regs;
+    int ret;
+
+    p_regs = (struct _isr_regs_aarch32 *) regs;
+    ctx32_ret.elr = p_regs->elr;
+    ctx32_ret.sp = p_regs->sp;
+    ctx32_ret.spsr = p_regs->spsr;
+    ret = gicv2_get_irq();
+
+    if (ret != 30) {
+        intr_disable();
+        kern_panic_user32(p_regs, INTR_IRQ);
+    } else {
+        timer_phys_set_compvalue(timer_get_freq() / 1000);
+        gicv2_irq_clear(ret);
+    }
+
+    return &ctx32_ret;
+}
+
+struct _ret_regs_aarch32 *intr_handler_user32_fiq(unsigned long int regs)
+{
+    struct _isr_regs_aarch32 *p_regs;
+
+    p_regs = (struct _isr_regs_aarch32 *) regs;
+    ctx32_ret.elr = p_regs->elr;
+    ctx32_ret.sp = p_regs->sp;
+    ctx32_ret.spsr = p_regs->spsr;
+    intr_disable();
+    kern_panic_user32(p_regs, INTR_FIQ);
+
+    return &ctx32_ret;
+}
+
+struct _ret_regs_aarch32 *intr_handler_user32_serr(unsigned long int regs)
+{
+    struct _isr_regs_aarch32 *p_regs;
+
+    p_regs = (struct _isr_regs_aarch32 *) regs;
+    ctx32_ret.elr = p_regs->elr;
+    ctx32_ret.sp = p_regs->sp;
+    ctx32_ret.spsr = p_regs->spsr;
+    intr_disable();
+    kern_panic_user32(p_regs, INTR_SERR);
+
+    return &ctx32_ret;
+}
