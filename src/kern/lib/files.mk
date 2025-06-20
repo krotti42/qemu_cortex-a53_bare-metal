@@ -5,4 +5,4 @@
 KERN_LIB_DIR				= ./lib
 
 include $(KERN_LIB_DIR)/kern/files.mk
-
+include $(KERN_LIB_DIR)/misc/files.mk

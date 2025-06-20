@@ -38,6 +38,7 @@
 #define ENOSPC          14      /* No space left on device */
 #define	ENAMETOOLONG    15      /* Name or path too long */
 #define	ENOSYS          16      /* No such syscall or not implemented */
+#define	EEMPTY          17      /* Empty */
 
 extern int _libkern_geterrno(void);
 
