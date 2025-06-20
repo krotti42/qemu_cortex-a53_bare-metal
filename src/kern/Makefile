@@ -18,6 +18,10 @@ AS			= $(CROSS_COMPILE)gcc
 CC			= $(CROSS_COMPILE)gcc
 LD			= $(CROSS_COMPILE)gcc
 
+ASFLAGS			+= -Wa,-march=armv8-a
+ASFLAGS			+= -Wa,-mcpu=cortex-a53
+ASFLAGS			+= -Wa,-mlittle-endian
+
 # C compiler flags
 CCFLAGS			+= -g
 CCFLAGS			+= -Wall
@@ -31,10 +35,16 @@ CCFLAGS			+= -ffreestanding
 CCFLAGS			+= -ffunction-sections
 CCFLAGS			+= -fdata-sections
 CCFLAGS			+= -fno-delete-null-pointer-checks
-CCFLAGS			+= -mcpu=cortex-a53
+CCFLAGS			+= -march=armv8-a
+CCFLAGS			+= -mcpu=cortex-a53+nofp+nosimd
+CCFLAGS			+= -mtune=cortex-a53
+CCFLAGS			+= -mfix-cortex-a53-835769
+CCFLAGS			+= -mfix-cortex-a53-843419
+CCFLAGS			+= -mcmodel=small
+CCFLAGS			+= -mgeneral-regs-only
 CCFLAGS			+= -I ./include
 
-# Generic GNU ld flags
+# GNU ld flags
 LDFLAGS			+= -Wl,-n
 LDFLAGS			+= -Wl,--build-id=none
 LDFLAGS			+= -Wl,--gc-sections
@@ -42,6 +52,8 @@ LDFLAGS			+= -Wl,-nostdlib
 LDFLAGS			+= -T ./ld/kern.ld
 LDFLAGS			+= -Wl,-Map $(TARGET_KERN).map
 LDFLAGS			+= -Wl,--no-warn-rwx-segments
+LDFLAGS			+= -Wl,--fix-cortex-a53-835769
+LDFLAGS			+= -Wl,--fix-cortex-a53-843419=full
 
 include ./files.mk
 
@@ -58,7 +70,7 @@ kern: $(KERN_AOBJ) $(KERN_COBJ)
 # Assemble assembly sources
 $(KERN_AOBJ): %.o: %.S
 	@echo "   [CCAS] $@"
-	@$(AS) -c $(CCFLAGS) -o $@ $<
+	@$(AS) -c $(CCFLAGS) $(ASFLAGS) -o $@ $<
 
 # Compile C sources
 $(KERN_COBJ): %.o: %.c
